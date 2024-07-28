@@ -21,14 +21,18 @@ class Position(Placeholder):
     def watch_text(self, text):
         self.query_one("#position", Label).update(text)
 
-    def on_click(self):
-        self.log.error(f"Offset {self.offset}")
-        self.log.error(f"size {self.size}")
+    def on_click(self, event: events.MouseEvent):
+        self.log.debug(f"Offset Widget {self.offset}")
+        self.log.debug(f"Widget ancestors {self.ancestors}")
+        self.log.debug(f"container View {self.container_viewport}")
+        self.log.debug(f"region {self.region}")
+        self.log.debug(f"Offset event {event.screen_offset}")
+        self.log.debug(f"size {self.size}")
         ...
 
 
 class TestScreen(Screen):
-    CSS = """MainScreen {
+    CSS = """TestScreen {
         layout: grid;
         grid-size: 3 3;
         grid-rows: 1fr;
