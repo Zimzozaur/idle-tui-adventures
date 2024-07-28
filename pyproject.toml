@@ -1,0 +1,36 @@
+[project]
+name = "idle-tui-adventures"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Full Name", email = "email@address.invalid" }
+]
+dependencies = [
+    "textual>=0.74.0",
+    "platformdirs>=4.2.2",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+idle = "idle_tui_adventures.app:main"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pre-commit>=3.7.1",
+    "textual-dev>=1.5.1",
+    "pytest>=8.3.2",
+    "pytest-cov>=5.0.0",
+]
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/idle_tui_adventures"]
