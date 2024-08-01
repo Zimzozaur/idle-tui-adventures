@@ -36,6 +36,7 @@ class Position(Placeholder):
 
 
 class MainScreen(Screen):
+    name: str = "MainScreen"
     DEFAULT_CSS = """MainScreen {
         layout: grid;
         grid-size: 3 3;

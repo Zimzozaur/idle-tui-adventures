@@ -6,6 +6,7 @@ from textual.widgets import Placeholder
 
 
 class CharacterCreation(ModalScreen):
+    name: str = "CharacterCreation"
     BINDINGS = [("escape", "app.pop_screen")]
 
     def compose(self) -> Iterable[Widget]:

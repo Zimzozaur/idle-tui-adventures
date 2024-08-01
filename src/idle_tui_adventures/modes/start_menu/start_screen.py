@@ -5,11 +5,14 @@ from textual.widget import Widget
 from textual.screen import Screen
 from textual.widgets import Button, Checkbox
 
-from .new_character_screen import CharacterCreation
-from .load_character_screen import CharacterSelection
+from idle_tui_adventures.modes.start_menu.new_character_screen import CharacterCreation
+from idle_tui_adventures.modes.start_menu.load_character_screen import (
+    CharacterSelection,
+)
 
 
 class StartScreen(Screen):
+    name: str = "StartScreen"
     DEFAULT_CSS = """StartScreen {
         align: center middle;
     }

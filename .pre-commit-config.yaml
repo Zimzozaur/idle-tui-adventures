@@ -22,3 +22,12 @@ repos:
     - id: ruff
     # Run the formatter.
     - id: ruff-format
+
+- repo: local
+  hooks:
+  - id: run tests
+    name: Run Tests
+    language: system
+    entry: pytest
+    pass_filenames: false
+    always_run: true

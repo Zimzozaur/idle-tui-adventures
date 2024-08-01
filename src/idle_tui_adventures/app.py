@@ -39,12 +39,3 @@ class IdleAdventure(App[None]):
 
     def on_mount(self):
         self.switch_mode(mode="Start")
-
-
-def main():
-    app = IdleAdventure()
-    app.run()
-
-
-if __name__ == "__main__":
-    main()

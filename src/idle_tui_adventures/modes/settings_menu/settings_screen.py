@@ -6,6 +6,7 @@ from textual.widgets import Placeholder
 
 
 class SettingsScreen(Screen):
+    name: str = "SettingsScreen"
     DEFAULT_CSS = """SettingsScreen {
         layout: grid;
         grid-size: 2 1;
