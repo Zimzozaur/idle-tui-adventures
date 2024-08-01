@@ -36,7 +36,7 @@ class Position(Placeholder):
 
 
 class MainScreen(Screen):
-    CSS = """MainScreen {
+    DEFAULT_CSS = """MainScreen {
         layout: grid;
         grid-size: 3 3;
         grid-rows: 1fr;
@@ -50,15 +50,9 @@ class MainScreen(Screen):
     pressed: bool = False
 
     def compose(self) -> Iterable[Widget]:
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
-        yield Position().data_bind(MainScreen.text)
+        for i in range(9):
+            yield Placeholder("MainScreen", id=f"tile_{i}")
+        # yield Position().data_bind(MainScreen.text)
 
         return super().compose()
 
