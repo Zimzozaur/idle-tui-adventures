@@ -24,6 +24,7 @@ class MenuIconsRow(Horizontal):
         grid-gutter: 1;
         column-span: 5;
         height: 30;
+
     }
 
 """
@@ -96,12 +97,12 @@ class MenuIcon(Static):
 class CharacterProgressbar(ProgressBar):
     DEFAULT_CSS = """
     CharacterProgressbar {
-        row-span: 1;
         column-span: 5;
         width: 1fr;
         height: 3;
-        border: round yellow;
         align: center middle;
+        layer: above;
+        offset:0 10vw;
 
         & Bar  {
             padding:0 0 0 0;

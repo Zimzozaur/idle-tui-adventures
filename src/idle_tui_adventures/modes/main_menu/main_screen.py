@@ -47,7 +47,7 @@ class MainScreen(Screen):
     name: str = "MainScreen"
     DEFAULT_CSS = """MainScreen {
         layout: grid;
-        grid-size: 3 5;
+        grid-size: 3 4;
         grid-rows: 1fr;
         grid-columns: 1fr;
         grid-gutter: 1;
