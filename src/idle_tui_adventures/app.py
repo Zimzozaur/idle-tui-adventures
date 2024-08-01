@@ -1,3 +1,4 @@
+from textual.reactive import reactive
 from textual.app import App
 
 from idle_tui_adventures.modes.start_menu.start_screen import StartScreen
@@ -9,6 +10,7 @@ from idle_tui_adventures.modes.settings_menu.settings_screen import SettingsScre
 
 
 class IdleAdventure(App[None]):
+    level: int = reactive(1)
     BINDINGS = [
         ("1", "switch_mode('Start')"),
         ("2", "switch_mode('Main')"),

@@ -6,7 +6,10 @@ from textual.reactive import reactive
 from textual.widgets import Placeholder, Label, Button
 from textual.screen import Screen, ModalScreen
 
-from idle_tui_adventures.widgets.custom_widgets import MenuIconsRow
+from idle_tui_adventures.widgets.custom_widgets import (
+    MenuIconsRow,
+    CharacterProgressbar,
+)
 from idle_tui_adventures.modes.main_menu.inventory_screen import (
     InventoryEquipScreen,
 )
@@ -44,7 +47,7 @@ class MainScreen(Screen):
     name: str = "MainScreen"
     DEFAULT_CSS = """MainScreen {
         layout: grid;
-        grid-size: 3 4;
+        grid-size: 3 5;
         grid-rows: 1fr;
         grid-columns: 1fr;
         grid-gutter: 1;
@@ -55,8 +58,8 @@ class MainScreen(Screen):
     def compose(self) -> Iterable[Widget]:
         for i in range(9):
             yield Placeholder("MainScreen", id=f"tile_{i}")
+        yield CharacterProgressbar()
         yield MenuIconsRow()
-        # yield CharacterProgressBar()
 
         return super().compose()
 

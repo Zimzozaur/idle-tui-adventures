@@ -5,7 +5,7 @@ from typing_extensions import Self, Iterable, get_args
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
-from textual.widgets import Static
+from textual.widgets import Static, ProgressBar
 from textual.containers import Horizontal
 
 from idle_tui_adventures.constants import get_icon, ICONS
@@ -26,16 +26,6 @@ class MenuIconsRow(Horizontal):
         height: 30;
     }
 
-    MenuIcon {
-        width: 1fr;
-        align: center middle;
-        &:hover {
-            background: yellow;
-        }
-        &:focus {
-            border: round yellow;
-        }
-    }
 """
 
     def compose(self) -> Iterable[Widget]:
@@ -64,6 +54,17 @@ class MenuIconsRow(Horizontal):
 class MenuIcon(Static):
     BINDINGS = [Binding("enter", "press", "Press Icon", show=False)]
 
+    DEFAULT_CSS = """MenuIcon {
+        width: 1fr;
+        align: center middle;
+        &:hover {
+            background: yellow;
+        }
+        &:focus {
+            border: round yellow;
+        }
+    }"""
+
     class Pressed(Message):
         def __init__(self, icon: MenuIcon) -> None:
             self.icon: MenuIcon = icon
@@ -90,3 +91,54 @@ class MenuIcon(Static):
     def _on_click(self, event):
         self.press()
         return super()._on_click(event=event)
+
+
+class CharacterProgressbar(ProgressBar):
+    DEFAULT_CSS = """
+    CharacterProgressbar {
+        row-span: 1;
+        column-span: 5;
+        width: 1fr;
+        height: 3;
+        border: round yellow;
+        align: center middle;
+
+        & Bar  {
+            padding:0 0 0 0;
+            width: 1fr;
+            }
+
+        & Bar > .bar--bar {
+            color: blue;
+            }
+
+        & PercentageStatus {
+        width: 5;
+        align: center middle;
+        offset: -50vw 0;
+        }
+    }
+"""
+
+    def __init__(
+        self,
+        total: float | None = 5,
+        show_percentage: bool = True,
+        show_eta: bool = False,
+    ):
+        super().__init__(total, show_percentage=show_percentage, show_eta=show_eta)
+
+    def on_mount(self) -> None:
+        self.timer = self.set_interval(1 / 5, self.make_progress)
+        return super().on_mount()
+
+    def make_progress(self):
+        self.update(advance=1)
+        if self.percentage == 1:
+            self.app.level += 1
+            self.notify(
+                title="Level Up",
+                message=f"reached level [blue]{self.app.level}[/]",
+                timeout=1,
+            )
+            self.update(progress=0, total=self.app.level * 5)
