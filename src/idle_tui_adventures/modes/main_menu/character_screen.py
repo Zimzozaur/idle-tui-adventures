@@ -8,10 +8,10 @@ from textual.screen import ModalScreen
 from idle_tui_adventures.widgets.custom_widgets import MenuIconsRow
 
 
-class InventoryEquipScreen(ModalScreen):
-    name: str = "InventoryEquipScreen"
-    BINDINGS = [("escape", "app.pop_screen"), ("b", "app.pop_screen")]
-    DEFAULT_CSS = """InventoryEquipScreen {
+class CharacterScreen(ModalScreen):
+    name: str = "CharacterScreen"
+    BINDINGS = [("escape", "app.pop_screen"), ("c", "app.pop_screen")]
+    DEFAULT_CSS = """CharacterScreen {
         layout: grid;
         grid-size: 2 4;
         grid-rows: 1fr;
@@ -25,12 +25,12 @@ class InventoryEquipScreen(ModalScreen):
     """
 
     def compose(self) -> Iterable[Widget]:
-        yield Placeholder("Inventory")
+        yield Placeholder("Stats")
         yield Placeholder("Equipment")
         yield MenuIconsRow()
         return super().compose()
 
     def _on_mount(self, event: Mount) -> None:
-        self.query_one("#icon_backpack").add_class("-active")
+        self.query_one("#icon_character").add_class("-active")
         self.log.error("set to active")
         return super()._on_mount(event)

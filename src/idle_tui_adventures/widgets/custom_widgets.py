@@ -2,54 +2,14 @@ from __future__ import annotations
 
 from typing_extensions import Self, Iterable, get_args
 
+from textual import on
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
 from textual.widgets import Static, ProgressBar
 from textual.containers import Horizontal
 
-from idle_tui_adventures.constants import get_icon, ICONS
-
-
-class MenuIconsRow(Horizontal):
-    BINDINGS = [
-        Binding("b", "open_backpack", priority=True),
-        Binding("c", "open_menu", priority=True),
-    ]
-    DEFAULT_CSS = """MenuIconsRow {
-        layout: grid;
-        grid-size: 5 1;
-        grid-rows: 1fr;
-        grid-columns: 1fr;
-        grid-gutter: 1;
-        column-span: 5;
-        height: 30;
-
-    }
-
-"""
-
-    def compose(self) -> Iterable[Widget]:
-        self.can_focus = True
-
-        for icon in get_args(ICONS):
-            yield MenuIcon(icon=icon)
-
-        return super().compose()
-
-    def action_open_backpack(self):
-        self.log.error("Shortcut Test")
-        if self.screen.name != "MainScreen":
-            self.app.pop_screen()
-        else:
-            self.app.push_screen("InventoryEquipScreen")
-
-    def action_open_menu(self):
-        self.log.error("Shortcut Menu")
-        if self.screen.name != "MainScreen":
-            self.app.pop_screen()
-        else:
-            self.app.push_screen("InventoryEquipScreen")
+from idle_tui_adventures.constants import get_icon, ICONS, ICON_SCREEN_DICT
 
 
 class MenuIcon(Static):
@@ -63,7 +23,11 @@ class MenuIcon(Static):
         }
         &:focus {
             border: round yellow;
+            }
+        &.-active {
+            background: $success;
         }
+
     }"""
 
     class Pressed(Message):
@@ -92,6 +56,83 @@ class MenuIcon(Static):
     def _on_click(self, event):
         self.press()
         return super()._on_click(event=event)
+
+
+class MenuIconsRow(Horizontal):
+    BINDINGS = [
+        Binding("b", "open_backpack", priority=True),
+        Binding("c", "open_character", priority=True),
+        Binding("d", "open_dungeon", priority=True),
+        Binding("l", "open_shop", priority=True),
+    ]
+    DEFAULT_CSS = """MenuIconsRow {
+        layout: grid;
+        grid-size: 5 1;
+        grid-rows: 1fr;
+        grid-columns: 1fr;
+        grid-gutter: 1;
+        column-span: 5;
+        height: 30;
+
+    }
+
+"""
+
+    def compose(self) -> Iterable[Widget]:
+        self.can_focus = True
+
+        for icon in get_args(ICONS):
+            yield MenuIcon(icon=icon)
+
+        return super().compose()
+
+    @on(MenuIcon.Pressed, "#icon_character")
+    def action_open_character(self):
+        icon = "character"
+        if self.screen.name == ICON_SCREEN_DICT[icon]:
+            self.app.pop_screen()
+        elif self.screen.name == "MainScreen":
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+        else:
+            self.app.pop_screen()
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+
+    @on(MenuIcon.Pressed, "#icon_backpack")
+    def action_open_backpack(self):
+        icon = "backpack"
+        if self.screen.name == ICON_SCREEN_DICT[icon]:
+            self.app.pop_screen()
+        elif self.screen.name == "MainScreen":
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+        else:
+            self.app.pop_screen()
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+
+    @on(MenuIcon.Pressed, "#icon_dungeon")
+    def action_open_dungeon(self):
+        icon = "dungeon"
+        if self.screen.name == ICON_SCREEN_DICT[icon]:
+            self.app.pop_screen()
+        elif self.screen.name == "MainScreen":
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+        else:
+            self.app.pop_screen()
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+
+    @on(MenuIcon.Pressed, "#icon_shop")
+    def action_open_shop(self):
+        icon = "shop"
+        if self.screen.name == ICON_SCREEN_DICT[icon]:
+            self.app.pop_screen()
+        elif self.screen.name == "MainScreen":
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+        else:
+            self.app.pop_screen()
+            self.app.push_screen(ICON_SCREEN_DICT[icon])
+
+    @on(MenuIcon.Pressed, "#icon_settings")
+    def action_open_settings(self):
+        self.app.switch_mode("Settings")
 
 
 class CharacterProgressbar(ProgressBar):

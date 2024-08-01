@@ -2,20 +2,14 @@ from typing import Literal
 from pathlib import Path
 from rich_pixels import Pixels
 
-BACKPACK_IMG = Path(__file__).parent / "./static/image_backpack.png"
-CHARACTER_IMG = Path(__file__).parent / "./static/image_character.png"
-DUNGEON_IMG = Path(__file__).parent / "./static/image_dungeon.png"
-SHOP_IMG = Path(__file__).parent / "./static/image_shop.png"
-SETTINGS_IMG = Path(__file__).parent / "./static/image_settings.png"
-
 ICONS = Literal["character", "backpack", "dungeon", "shop", "settings"]
 
 ICON_SCREEN_DICT = {
     "character": "CharacterScreen",
     "backpack": "InventoryEquipScreen",
-    "dungeon": "",
-    "shop": "",
-    "settings": "",
+    "dungeon": "DungeonScreen",
+    "shop": "ShopScreen",
+    "settings": "SettingsScreen",
 }
 
 

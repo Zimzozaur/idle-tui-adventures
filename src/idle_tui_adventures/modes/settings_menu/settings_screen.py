@@ -7,6 +7,7 @@ from textual.widgets import Placeholder
 
 class SettingsScreen(Screen):
     name: str = "SettingsScreen"
+    BINDINGS = [("escape", 'app.switch_mode("Main")')]
     DEFAULT_CSS = """SettingsScreen {
         layout: grid;
         grid-size: 2 1;
