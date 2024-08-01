@@ -1,10 +1,15 @@
 from typing import Iterable
 
-from textual import events
+from textual import events, on
 from textual.widget import Widget
 from textual.reactive import reactive
 from textual.widgets import Placeholder, Label, Button
 from textual.screen import Screen, ModalScreen
+
+from idle_tui_adventures.widgets.custom_widgets import MenuIconsRow
+from idle_tui_adventures.modes.main_menu.inventory_screen import (
+    InventoryCharacterScreen,
+)
 
 
 class PopUpScreen(ModalScreen):
@@ -39,31 +44,26 @@ class MainScreen(Screen):
     name: str = "MainScreen"
     DEFAULT_CSS = """MainScreen {
         layout: grid;
-        grid-size: 3 3;
+        grid-size: 3 4;
         grid-rows: 1fr;
         grid-columns: 1fr;
         grid-gutter: 1;
+        align: center middle;
     }
     """
-    x_pos: reactive = reactive(0)
-    y_pos: reactive = reactive(0)
-    text: reactive = reactive("Hi")
-    pressed: bool = False
 
     def compose(self) -> Iterable[Widget]:
         for i in range(9):
             yield Placeholder("MainScreen", id=f"tile_{i}")
-        # yield Position().data_bind(MainScreen.text)
+        yield MenuIconsRow()
+        # yield CharacterProgressBar()
 
         return super().compose()
 
-    def on_mouse_move(self, event: events.MouseMove):
-        if self.pressed:
-            self.text = f"x:{event.screen_x}, y:{event.screen_y}"
-            self.log.error(self.text)
-
-    def on_mouse_down(self):
-        self.pressed = True
-
-    def on_mouse_up(self):
-        self.pressed = False
+    @on(
+        events.MouseDown,
+    )
+    def open_backpack(self, event: events.MouseDown):
+        position = event.screen_offset
+        if self.get_widget_at(*position)[0].id == "backpack":
+            self.app.push_screen(InventoryCharacterScreen())

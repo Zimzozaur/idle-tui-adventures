@@ -8,6 +8,7 @@ authors = [
 dependencies = [
     "textual>=0.74.0",
     "platformdirs>=4.2.2",
+    "rich-pixels>=3.0.1",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"
@@ -31,7 +32,7 @@ dev-dependencies = [
 ]
 [tool.pytest.ini_options]
 addopts = "--cov idle_tui_adventures --cov-report term-missing --verbose"
-testspaths = ["tests"]
+testpaths = ["tests"]
 
 [tool.hatch.metadata]
 allow-direct-references = true

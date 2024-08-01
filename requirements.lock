@@ -13,6 +13,7 @@
 linkify-it-py==2.0.3
     # via markdown-it-py
 markdown-it-py==3.0.0
+    # via markdown-it-py
     # via mdit-py-plugins
     # via rich
     # via textual
@@ -20,12 +21,17 @@ mdit-py-plugins==0.4.1
     # via markdown-it-py
 mdurl==0.1.2
     # via markdown-it-py
+pillow==10.4.0
+    # via rich-pixels
 platformdirs==4.2.2
     # via idle-tui-adventures
 pygments==2.18.0
     # via rich
 rich==13.7.1
+    # via rich-pixels
     # via textual
+rich-pixels==3.0.1
+    # via idle-tui-adventures
 textual==0.74.0
     # via idle-tui-adventures
 typing-extensions==4.12.2
