@@ -8,7 +8,7 @@ from textual.screen import Screen, ModalScreen
 
 from idle_tui_adventures.widgets.custom_widgets import MenuIconsRow
 from idle_tui_adventures.modes.main_menu.inventory_screen import (
-    InventoryCharacterScreen,
+    InventoryEquipScreen,
 )
 
 
@@ -66,4 +66,4 @@ class MainScreen(Screen):
     def open_backpack(self, event: events.MouseDown):
         position = event.screen_offset
         if self.get_widget_at(*position)[0].id == "backpack":
-            self.app.push_screen(InventoryCharacterScreen())
+            self.app.push_screen(InventoryEquipScreen())

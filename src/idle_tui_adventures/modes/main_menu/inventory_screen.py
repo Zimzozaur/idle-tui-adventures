@@ -7,10 +7,10 @@ from textual.screen import ModalScreen
 from idle_tui_adventures.widgets.custom_widgets import MenuIconsRow
 
 
-class InventoryCharacterScreen(ModalScreen):
-    name: str = "InventoryCharacterScreen"
+class InventoryEquipScreen(ModalScreen):
+    name: str = "InventoryEquipScreen"
     BINDINGS = [("escape", "app.pop_screen"), ("b", "app.pop_screen")]
-    DEFAULT_CSS = """InventoryCharacterScreen {
+    DEFAULT_CSS = """InventoryEquipScreen {
         layout: grid;
         grid-size: 2 4;
         grid-rows: 1fr;

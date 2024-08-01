@@ -23,6 +23,7 @@ async def test_buttons():
     app = IdleAdventure()
 
     async with app.run_test() as pilot:
+        await pilot.press("1")
         await pilot.click("#btn_new_character")
         assert app.screen.name == "CharacterCreation"
 

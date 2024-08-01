@@ -1,18 +1,14 @@
-from typing import Iterable
+from __future__ import annotations
+
+from typing_extensions import Self, Iterable, get_args
 
 from textual.binding import Binding
+from textual.message import Message
 from textual.widget import Widget
 from textual.widgets import Static
 from textual.containers import Horizontal
 
-from rich_pixels import Pixels
-from idle_tui_adventures.constants import (
-    BACKPACK_IMG,
-    CHARACTER_IMG,
-    DUNGEON_IMG,
-    SETTINGS_IMG,
-    SHOP_IMG,
-)
+from idle_tui_adventures.constants import get_icon, ICONS
 
 
 class MenuIconsRow(Horizontal):
@@ -30,7 +26,7 @@ class MenuIconsRow(Horizontal):
         height: 30;
     }
 
-    Static {
+    MenuIcon {
         width: 1fr;
         align: center middle;
         &:hover {
@@ -44,26 +40,9 @@ class MenuIconsRow(Horizontal):
 
     def compose(self) -> Iterable[Widget]:
         self.can_focus = True
-        img_backpack = Pixels.from_image_path(BACKPACK_IMG, resize=(30, 25))
-        img_char = Pixels.from_image_path(CHARACTER_IMG, resize=(30, 25))
-        img_shop = Pixels.from_image_path(SHOP_IMG, resize=(30, 25))
-        img_dungeon = Pixels.from_image_path(DUNGEON_IMG, resize=(30, 25))
-        img_settings = Pixels.from_image_path(SETTINGS_IMG, resize=(30, 25))
 
-        character_icon = Static(img_char, id="character")
-        yield character_icon
-
-        backpack_icon = Static(img_backpack, id="backpack")
-        yield backpack_icon
-
-        dungeon_icon = Static(img_dungeon, id="dungeon")
-        yield dungeon_icon
-
-        shop_icon = Static(img_shop, id="shop")
-        yield shop_icon
-
-        settings_icon = Static(img_settings, id="settings")
-        yield settings_icon
+        for icon in get_args(ICONS):
+            yield MenuIcon(icon=icon)
 
         return super().compose()
 
@@ -72,11 +51,42 @@ class MenuIconsRow(Horizontal):
         if self.screen.name != "MainScreen":
             self.app.pop_screen()
         else:
-            self.app.push_screen("InventoryCharacterScreen")
+            self.app.push_screen("InventoryEquipScreen")
 
     def action_open_menu(self):
         self.log.error("Shortcut Menu")
         if self.screen.name != "MainScreen":
             self.app.pop_screen()
         else:
-            self.app.push_screen("InventoryCharacterScreen")
+            self.app.push_screen("InventoryEquipScreen")
+
+
+class MenuIcon(Static):
+    BINDINGS = [Binding("enter", "press", "Press Icon", show=False)]
+
+    class Pressed(Message):
+        def __init__(self, icon: MenuIcon) -> None:
+            self.icon: MenuIcon = icon
+            """The icon that was pressed."""
+            super().__init__()
+
+        @property
+        def control(self) -> MenuIcon:
+            return self.icon
+
+    def __init__(self, icon: ICONS) -> None:
+        self.icon = get_icon(icon=icon)
+
+        super().__init__(self.icon, id=f"icon_{icon}")
+
+    def press(self) -> Self:
+        # Manage the "active" effect:
+        # self._start_active_affect()
+        # ...and let other components know that we've just been clicked:
+        self.log.error(f"{self.id} was pressed")
+        self.post_message(MenuIcon.Pressed(self))
+        return self
+
+    def _on_click(self, event):
+        self.press()
+        return super()._on_click(event=event)
