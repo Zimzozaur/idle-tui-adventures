@@ -2,6 +2,10 @@ from typing import Literal
 from pathlib import Path
 from rich_pixels import Pixels
 
+DB_NAME = "test.db"
+DB_PATH = Path(".").cwd()
+DB_FULLNAME = DB_PATH / DB_NAME
+
 ICONS = Literal["character", "backpack", "dungeon", "shop", "settings"]
 
 ICON_SCREEN_DICT = {

@@ -7,9 +7,9 @@ from idle_tui_adventures.modes.main_menu.inventory_screen import InventoryEquipS
 from idle_tui_adventures.modes.main_menu.dungeon_screen import DungeonScreen
 from idle_tui_adventures.modes.main_menu.shop_screen import ShopScreen
 from idle_tui_adventures.modes.main_menu.character_screen import CharacterScreen
-
-
 from idle_tui_adventures.modes.settings_menu.settings_screen import SettingsScreen
+
+from idle_tui_adventures.database import init_new_db
 
 
 class IdleAdventure(App[None]):
@@ -28,5 +28,6 @@ class IdleAdventure(App[None]):
     MODES = {"Start": StartScreen, "Main": MainScreen, "Settings": SettingsScreen}
 
     def on_mount(self):
-        # self.switch_mode(mode="Start")
-        self.switch_mode(mode="Main")
+        init_new_db()
+        self.switch_mode(mode="Start")
+        # self.switch_mode(mode="Main")
