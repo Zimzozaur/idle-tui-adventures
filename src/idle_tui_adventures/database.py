@@ -17,6 +17,7 @@ def init_new_db():
     CREATE TABLE IF NOT EXISTS characters (
     character_id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
+    Check (name <> ''),
     profession TEXT NOT NULL,
     created_at TIMESTAMP,
     strength INTEGER NOT NULL,
