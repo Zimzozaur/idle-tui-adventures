@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing_extensions import Self, Iterable, get_args
+from typing_extensions import Self, Iterable
 
 from textual import on
 from textual.binding import Binding
@@ -9,7 +9,8 @@ from textual.widget import Widget
 from textual.widgets import Static, ProgressBar
 from textual.containers import Horizontal
 
-from idle_tui_adventures.constants import get_icon, ICONS, ICON_SCREEN_DICT
+from idle_tui_adventures.constants import ICONS, ICON_SCREEN_DICT, ICONS_LITERAL
+from idle_tui_adventures.utils import get_icon
 
 
 class MenuIcon(Static):
@@ -40,7 +41,7 @@ class MenuIcon(Static):
         def control(self) -> MenuIcon:
             return self.icon
 
-    def __init__(self, icon: ICONS) -> None:
+    def __init__(self, icon: ICONS_LITERAL) -> None:
         self.icon = get_icon(icon=icon)
 
         super().__init__(self.icon, id=f"icon_{icon}")
@@ -81,7 +82,7 @@ class MenuIconsRow(Horizontal):
     def compose(self) -> Iterable[Widget]:
         self.can_focus = True
 
-        for icon in get_args(ICONS):
+        for icon in ICONS:
             yield MenuIcon(icon=icon)
 
         return super().compose()
@@ -139,11 +140,12 @@ class CharacterProgressbar(ProgressBar):
     DEFAULT_CSS = """
     CharacterProgressbar {
         column-span: 5;
+        row-span: 1;
         width: 1fr;
         height: 3;
         align: center middle;
         layer: above;
-        offset:0 10vw;
+        offset: 0 300%;
 
         & Bar  {
             padding:0 0 0 0;

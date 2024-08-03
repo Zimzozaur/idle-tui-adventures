@@ -3,51 +3,81 @@ from typing import Iterable
 from textual import on
 from textual.screen import ModalScreen
 from textual.widget import Widget
-from textual.widgets import Placeholder, Button, Input
-from textual.containers import Vertical, Horizontal
+from textual.widgets import Placeholder, Button, Input, Select
+from textual.containers import Vertical, Horizontal, Center
 
 from idle_tui_adventures.database import create_new_character, get_all_characters
+from idle_tui_adventures.widgets.stat_point_widgets import (
+    StartStatRandomizer,
+)  # , StatDisplay
+from idle_tui_adventures.constants import PROFESSIONS
 
 
 class CharacterCreation(ModalScreen):
+    selected_class: str
+
     CSS = """
     CharacterCreation {
+        content-align:center middle;
         align:center middle;
     }
 
     Horizontal {
+        layout: grid;
+        grid-size: 3 1;
+        grid-columns: 1fr;
         align:center middle;
     }
-    Vertical {
+    CharacterCreation > Vertical {
         align:center middle;
+        text-align: center;
+        width: 1fr;
+
+        Center{
+            align:center middle;
+            width: 33%;
+        Button {
+            width: 1fr;
+            text-align: center;
+
+        }
+        Input {
+            width: 1fr;
+            text-align: center;
+        }
+        Select {
+            width: 1fr;
+        }
+            }
     }
 
-    Button {
-        width: auto;
-    }
-    Input {
-        width: auto;
-    }
     """
     name: str = "CharacterCreation"
     BINDINGS = [("escape", "app.pop_screen")]
 
     def compose(self) -> Iterable[Widget]:
         with Horizontal():
-            yield Placeholder("New Character Screen")
-            yield Placeholder("Stat Roller")
+            yield Placeholder("Test")
+            yield StartStatRandomizer()
         with Vertical():
-            yield Input(placeholder="Enter Character Name")
-            yield Button("Create", id="btn_create_character")
-            yield Button("Check", id="btn_check")
+            with Center():
+                yield Input(placeholder="Enter Character Name")
+                yield Select(
+                    options=[(prof, prof) for prof in PROFESSIONS],
+                    prompt="Select Profession",
+                    allow_blank=False,
+                )
+                yield Button("Create", id="btn_create_character")
+                yield Button("Check", id="btn_check")
         return super().compose()
 
     @on(Button.Pressed, "#btn_create_character")
     def create_new_char(self):
-        val = self.query_one(Input).value
+        name = self.query_one(Input).value
+        profession = self.query_one(Select).value
         create_new_character(
-            name=val,
-            profession="tester",
+            name=name,
+            profession=profession,
             strength=1,
             intelligence=2,
             dexterity=2,

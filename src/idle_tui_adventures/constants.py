@@ -1,12 +1,17 @@
-from typing import Literal
+from typing import Literal, get_args
 from pathlib import Path
-from rich_pixels import Pixels
 
 DB_NAME = "test.db"
 DB_PATH = Path(".").cwd()
 DB_FULLNAME = DB_PATH / DB_NAME
 
-ICONS = Literal["character", "backpack", "dungeon", "shop", "settings"]
+ICONS_LITERAL = Literal["character", "backpack", "dungeon", "shop", "settings"]
+STATS_LITERAL = Literal["strength", "intelligence", "dexterity", "luck"]
+PROFESSIONS_LITERAL = Literal["Warrior", "Mage", "Ranger", "Thief"]
+
+ICONS = get_args(ICONS_LITERAL)
+STATS = get_args(STATS_LITERAL)
+PROFESSIONS = get_args(PROFESSIONS_LITERAL)
 
 ICON_SCREEN_DICT = {
     "character": "CharacterScreen",
@@ -15,8 +20,3 @@ ICON_SCREEN_DICT = {
     "shop": "ShopScreen",
     "settings": "SettingsScreen",
 }
-
-
-def get_icon(icon: ICONS) -> Path:
-    icon_path = Path(__file__).parent / f"./static/image_{icon}.png"
-    return Pixels.from_image_path(icon_path, resize=(30, 25))

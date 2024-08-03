@@ -23,7 +23,8 @@ def init_new_db():
     intelligence INTEGER NOT NULL,
     dexterity INTEGER NOT NULL,
     luck INTEGER NOT NULL,
-    Check (name <> "")
+    Check (name <> ""),
+    Check (profession IS IN "")
     );
     """
 
@@ -181,3 +182,12 @@ def get_items_for_character(character_name: str):
 
         for item in items:
             print(item)
+
+
+# Update
+# UPDATE Customers
+# SET ContactName = 'Alfred Schmidt', City = 'Frankfurt'
+# WHERE CustomerID = 1;
+
+# Delete
+# DELETE FROM Customers WHERE CustomerName='Alfreds Futterkiste';

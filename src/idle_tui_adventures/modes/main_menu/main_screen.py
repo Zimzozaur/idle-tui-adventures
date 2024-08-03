@@ -4,7 +4,7 @@ from textual.widget import Widget
 from textual.widgets import Placeholder
 from textual.screen import Screen
 
-from idle_tui_adventures.widgets.custom_widgets import (
+from idle_tui_adventures.widgets.main_screen_widgets import (
     MenuIconsRow,
     CharacterProgressbar,
 )
