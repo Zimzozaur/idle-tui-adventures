@@ -24,7 +24,7 @@ def init_new_db():
     dexterity INTEGER NOT NULL,
     luck INTEGER NOT NULL,
     Check (name <> ""),
-    Check (profession IS IN "")
+    Check (profession in ('Mage', 'Warrior', 'Ranger', 'Thief'))
     );
     """
 
@@ -97,7 +97,7 @@ def create_new_character(
     intelligence: int,
     dexterity: int,
     luck: int,
-):
+)-> str|int:
     data_character_dict = {
         "name": name,
         "profession": profession,
@@ -128,9 +128,12 @@ def create_new_character(
             con.commit()
             return 0
         except sqlite3.Error as e:
-            print(e)
             con.rollback()
-            return 1
+            if e.sqlite_errorcode == sqlite3.SQLITE_CONSTRAINT_CHECK:
+                return "please provide a character name"
+            elif e.sqlite_errorcode == sqlite3.SQLITE_CONSTRAINT_UNIQUE:
+                return "character name already taken"
+            return e.sqlite_errorname
 
 
 def get_all_characters():

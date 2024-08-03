@@ -75,14 +75,26 @@ class CharacterCreation(ModalScreen):
     def create_new_char(self):
         name = self.query_one(Input).value
         profession = self.query_one(Select).value
-        create_new_character(
-            name=name,
-            profession=profession,
-            strength=1,
-            intelligence=2,
-            dexterity=2,
-            luck=4,
-        )
+        if (
+            msg := create_new_character(
+                name=name,
+                profession=profession,
+                strength=1,
+                intelligence=2,
+                dexterity=2,
+                luck=4,
+            )
+        ) == 0:
+            self.notify(
+                title="Character Creation Successful",
+                message=f"[blue]{name}[/], the [blue]{profession}[/] is ready for Adventures",
+            )
+        else:
+            self.notify(
+                title="Charcter Creation Failed",
+                message=f"Error [red]{msg}[/]",
+                severity="error",
+            )
 
     @on(Button.Pressed, "#btn_check")
     def check_chars(self):
