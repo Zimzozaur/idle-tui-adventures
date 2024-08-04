@@ -11,5 +11,6 @@ wheels/
 # venv
 .venv
 
-# Developer sqlite .db
+# Developer stuff
 *.db
+todo.md

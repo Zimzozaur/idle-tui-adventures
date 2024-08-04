@@ -9,8 +9,6 @@
 #   generate-hashes: false
 #   universal: false
 
---trusted-host artifactory.bayer.com
---trusted-host artifactory.intranet.cnb
 -e file:.
 aiohappyeyeballs==2.3.4
     # via aiohttp
@@ -28,7 +26,6 @@ colorama==0.4.6
     # via click
     # via pytest
 coverage==7.6.0
-    # via coverage
     # via pytest-cov
 distlib==0.3.8
     # via virtualenv
@@ -46,7 +43,6 @@ iniconfig==2.0.0
 linkify-it-py==2.0.3
     # via markdown-it-py
 markdown-it-py==3.0.0
-    # via markdown-it-py
     # via mdit-py-plugins
     # via rich
     # via textual

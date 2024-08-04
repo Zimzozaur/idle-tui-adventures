@@ -9,13 +9,10 @@
 #   generate-hashes: false
 #   universal: false
 
---trusted-host artifactory.bayer.com
---trusted-host artifactory.intranet.cnb
 -e file:.
 linkify-it-py==2.0.3
     # via markdown-it-py
 markdown-it-py==3.0.0
-    # via markdown-it-py
     # via mdit-py-plugins
     # via rich
     # via textual
