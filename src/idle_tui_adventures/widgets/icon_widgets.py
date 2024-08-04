@@ -10,7 +10,7 @@ from textual.widget import Widget
 from textual.widgets import Static
 from textual.containers import Horizontal
 
-from idle_tui_adventures.constants import ICONS, ICON_SCREEN_DICT, ICONS_LITERAL
+from idle_tui_adventures.constants import MENU_ICONS, ICON_SCREEN_DICT, ICONS_LITERAL
 from idle_tui_adventures.utils import get_icon
 
 
@@ -93,7 +93,7 @@ class MenuIconsRow(Horizontal):
     def compose(self) -> Iterable[Widget]:
         self.can_focus = True
 
-        for icon in ICONS:
+        for icon in MENU_ICONS:
             yield MenuIcon(icon=icon, id=icon)
 
         return super().compose()

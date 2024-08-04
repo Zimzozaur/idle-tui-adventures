@@ -1,15 +1,16 @@
 from typing import Literal, get_args
 from pathlib import Path
 
-DB_NAME = "test.db"
+DB_NAME = "database.db"
 DB_PATH = Path(".").cwd()
 DB_FULLNAME = DB_PATH / DB_NAME
 
-ICONS_LITERAL = Literal["character", "backpack", "dungeon", "shop", "settings"]
+MENU_ICONS_LITERAL = Literal["character", "backpack", "dungeon", "shop", "settings"]
 STATS_LITERAL = Literal["strength", "intelligence", "dexterity", "luck"]
 PROFESSIONS_LITERAL = Literal["Warrior", "Mage", "Ranger", "Thief"]
+ICONS_LITERAL = MENU_ICONS_LITERAL | PROFESSIONS_LITERAL
 
-ICONS = get_args(ICONS_LITERAL)
+MENU_ICONS = get_args(MENU_ICONS_LITERAL)
 STATS = get_args(STATS_LITERAL)
 PROFESSIONS = get_args(PROFESSIONS_LITERAL)
 

@@ -97,7 +97,7 @@ def create_new_character(
     intelligence: int,
     dexterity: int,
     luck: int,
-)-> str|int:
+) -> str | int:
     data_character_dict = {
         "name": name,
         "profession": profession,
@@ -136,15 +136,16 @@ def create_new_character(
             return e.sqlite_errorname
 
 
-def get_all_characters():
+def get_all_characters() -> list[tuple]:
+    characters = []
     with create_connection() as con:
         try:
             for row in con.execute("select * from characters").fetchall():
-                print(row)
-            return 0
+                characters.append(row)
+            return characters
         except sqlite3.Error as e:
             print(e)
-            return 1
+            return characters
 
 
 def store_item(character_name, item):

@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing_extensions import Iterable, get_args
 
 from textual.widget import Widget
-from textual.widgets import Label, Digits, Button
+from textual.widgets import Digits, Button
 from textual.containers import Horizontal, Vertical
 
 from idle_tui_adventures.constants import STATS_LITERAL, STATS
@@ -13,6 +13,8 @@ class StartStatRandomizer(Vertical):
     DEFAULT_CSS = """
     StartStatRandomizer {
         align: center middle;
+        layout: grid;
+        grid-size: 2 2;
     }
     """
 
@@ -20,6 +22,28 @@ class StartStatRandomizer(Vertical):
         for stat in STATS:
             yield StatDisplayWithoutButton(stat=stat, value=0)
         return super().compose()
+
+    def get_stat_dict(self):
+        return {
+            stat: self.query_one(f"#stat_{stat}", StatDisplayWithoutButton).int_value
+            for stat in STATS
+        }
+
+    @property
+    def stat_int(self) -> StatDisplayWithoutButton:
+        return self.query_one("#stat_intelligence")
+
+    @property
+    def stat_str(self) -> StatDisplayWithoutButton:
+        return self.query_one("#stat_strenght")
+
+    @property
+    def stat_dex(self) -> StatDisplayWithoutButton:
+        return self.query_one("#stat_dexterity")
+
+    @property
+    def stat_luc(self) -> StatDisplayWithoutButton:
+        return self.query_one("#stat_luck")
 
 
 class StatDisplay(Vertical):
@@ -38,33 +62,33 @@ class StatDisplay(Vertical):
         return super().compose()
 
 
-class StatDisplayWithoutButton(Vertical):
+class StatDisplayWithoutButton(Digits):
     DEFAULT_CSS = """ StatDisplayWithoutButton {
-        layout: grid;
-        grid-size: 1 2;
-        grid-rows: 1fr;
-        column-span: 1;
+        border: solid brown;
+        width:1fr;
+        height:1fr;
+        content-align:center middle;
+        text-align:center;
 
-        & Label {
-            align: center middle;
-            width: auto;
-        }
-        & Digits {
-            align: center middle;
-            width: auto;
-        }
     }
     """
 
     def __init__(self, stat: STATS_LITERAL, value: int):
         self.stat = stat
-        self.value = value
-        super().__init__()
+        super().__init__(value=f"{value}", id=f"stat_{stat}")
 
     def compose(self) -> Iterable[Widget]:
-        yield Label(renderable=self.stat)
-        yield Digits(value=f"{self.value}")
+        self.border_title = self.stat
+        self.styles.border_title_color = "red"
+
         return super().compose()
+
+    def set_value(self, int_val):
+        self.update(value=str(int_val))
+
+    @property
+    def int_value(self) -> int:
+        return int(self.value)
 
 
 class StatDisplayWithButton(Horizontal):
