@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing_extensions import Self, Iterable
 
 from textual import on
+from textual.events import Resize
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
@@ -18,7 +19,9 @@ class MenuIcon(Static):
 
     DEFAULT_CSS = """MenuIcon {
         width: 1fr;
+        height: 1fr;
         align: center middle;
+        content-align: center middle;
         &:hover {
             background: yellow;
         }
@@ -42,9 +45,10 @@ class MenuIcon(Static):
             return self.icon
 
     def __init__(self, icon: ICONS_LITERAL) -> None:
-        self.icon = get_icon(icon=icon)
+        self.icon_name = icon
+        self.icon_img = get_icon(icon=self.icon_name)
 
-        super().__init__(self.icon, id=f"icon_{icon}")
+        super().__init__(self.icon_img, id=f"icon_{self.icon_name}")
 
     def press(self) -> Self:
         # Manage the "active" effect:
@@ -57,6 +61,13 @@ class MenuIcon(Static):
     def _on_click(self, event):
         self.press()
         return super()._on_click(event=event)
+
+    @on(Resize)
+    def keep_image_size(self, event: Resize):
+        new_width, new_height = event.size
+        self.update(
+            get_icon(icon=self.icon_name, width=new_width, heigth=int(1.8 * new_height))
+        )
 
 
 class MenuIconsRow(Horizontal):

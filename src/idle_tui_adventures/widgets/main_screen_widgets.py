@@ -41,7 +41,7 @@ class CharacterProgressbar(ProgressBar):
         super().__init__(total, show_percentage=show_percentage, show_eta=show_eta)
 
     def on_mount(self) -> None:
-        self.timer = self.set_interval(1 / 5, self.make_progress)
+        self.timer = self.set_interval(1 / 5, self.make_progress, pause=True)
         return super().on_mount()
 
     def make_progress(self):
