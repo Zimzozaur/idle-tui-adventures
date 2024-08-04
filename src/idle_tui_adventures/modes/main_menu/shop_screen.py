@@ -5,7 +5,7 @@ from textual.widget import Widget
 from textual.widgets import Placeholder
 from textual.screen import ModalScreen
 
-from idle_tui_adventures.widgets.main_screen_widgets import MenuIconsRow
+from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow
 
 
 class ShopScreen(ModalScreen):
