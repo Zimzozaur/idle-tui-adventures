@@ -20,6 +20,7 @@ class MainScreen(Screen):
         grid-gutter: 1;
         align: center middle;
     }
+
     """
 
     def compose(self) -> Iterable[Widget]:

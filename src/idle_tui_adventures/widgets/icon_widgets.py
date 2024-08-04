@@ -22,15 +22,6 @@ class MenuIcon(Static):
         height: 1fr;
         align: center middle;
         content-align: center middle;
-        &:hover {
-            background: yellow;
-        }
-        &:focus {
-            border: round yellow;
-            }
-        &.-active {
-            background: $success;
-        }
 
     }"""
 
@@ -44,11 +35,11 @@ class MenuIcon(Static):
         def control(self) -> MenuIcon:
             return self.icon
 
-    def __init__(self, icon: ICONS_LITERAL) -> None:
+    def __init__(self, icon: ICONS_LITERAL, id: str) -> None:
         self.icon_name = icon
         self.icon_img = get_icon(icon=self.icon_name)
 
-        super().__init__(self.icon_img, id=f"icon_{self.icon_name}")
+        super().__init__(self.icon_img, id=f"icon_{id}")
 
     def press(self) -> Self:
         # Manage the "active" effect:
@@ -63,7 +54,7 @@ class MenuIcon(Static):
         return super()._on_click(event=event)
 
     @on(Resize)
-    def keep_image_size(self, event: Resize):
+    def keep_image_size(self, event: Resize) -> None:
         new_width, new_height = event.size
         self.update(
             get_icon(icon=self.icon_name, width=new_width, heigth=int(1.8 * new_height))
@@ -86,6 +77,15 @@ class MenuIconsRow(Horizontal):
         column-span: 5;
         height: 30;
 
+        & MenuIcon {
+            &:hover {
+                background: yellow;
+            }
+            &.-active {
+                background: $success;
+            }
+        }
+
     }
 
 """
@@ -94,7 +94,7 @@ class MenuIconsRow(Horizontal):
         self.can_focus = True
 
         for icon in ICONS:
-            yield MenuIcon(icon=icon)
+            yield MenuIcon(icon=icon, id=icon)
 
         return super().compose()
 

@@ -3,7 +3,7 @@ from typing import Iterable
 from textual import on
 from textual.screen import ModalScreen
 from textual.widget import Widget
-from textual.widgets import Placeholder, Button, Input, Select
+from textual.widgets import Button, Input, Select
 from textual.containers import Vertical, Horizontal, Center
 
 from idle_tui_adventures.database import create_new_character, get_all_characters
@@ -11,6 +11,7 @@ from idle_tui_adventures.widgets.stat_point_widgets import (
     StartStatRandomizer,
 )  # , StatDisplay
 from idle_tui_adventures.constants import PROFESSIONS
+from idle_tui_adventures.widgets.icon_widgets import MenuIcon
 
 
 class CharacterCreation(ModalScreen):
@@ -57,8 +58,8 @@ class CharacterCreation(ModalScreen):
 
     def compose(self) -> Iterable[Widget]:
         with Horizontal():
-            yield Placeholder("Test")
-            yield StartStatRandomizer()
+            # yield MenuIcon(icon="warrior", id='warrior')
+            yield StartStatRandomizer(id="stat_randomizer")
         with Vertical():
             with Center():
                 yield Input(placeholder="Enter Character Name")
@@ -71,20 +72,23 @@ class CharacterCreation(ModalScreen):
                 yield Button("Check", id="btn_check")
         return super().compose()
 
+    def on_mount(self):
+        cl = self.query_one(Select).value
+        self.mount(MenuIcon(icon=cl, id=cl), before="#stat_randomizer")
+
     @on(Button.Pressed, "#btn_create_character")
     def create_new_char(self):
         name = self.query_one(Input).value
         profession = self.query_one(Select).value
-        if (
-            msg := create_new_character(
-                name=name,
-                profession=profession,
-                strength=1,
-                intelligence=2,
-                dexterity=2,
-                luck=4,
-            )
-        ) == 0:
+        char_dict = {
+            "name": name,
+            "profession": profession,
+            "strength": 1,
+            "intelligence": 2,
+            "dexterity": 2,
+            "luck": 4,
+        }
+        if (msg := create_new_character(**char_dict)) == 0:
             self.notify(
                 title="Character Creation Successful",
                 message=f"[blue]{name}[/], the [blue]{profession}[/] is ready for Adventures",
@@ -99,3 +103,12 @@ class CharacterCreation(ModalScreen):
     @on(Button.Pressed, "#btn_check")
     def check_chars(self):
         get_all_characters()
+
+    @on(Select.Changed)
+    async def on_select_changed(self, event: Select.Changed):
+        selected_class_name = event.value
+        await self.query_one(MenuIcon).remove()
+        self.mount(
+            MenuIcon(icon=selected_class_name, id=selected_class_name),
+            before="#stat_randomizer",
+        )
