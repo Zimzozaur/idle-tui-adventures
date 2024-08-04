@@ -6,7 +6,7 @@ from textual.widget import Widget
 from textual.widgets import Button, Input, Select
 from textual.containers import Vertical, Horizontal, Center
 
-from idle_tui_adventures.database import create_new_character, get_all_characters
+from idle_tui_adventures.database import create_new_character
 from idle_tui_adventures.widgets.stat_point_widgets import (
     StartStatRandomizer,
 )  # , StatDisplay
@@ -81,7 +81,7 @@ class CharacterCreation(ModalScreen):
                     allow_blank=False,
                 )
                 yield Button("Create", id="btn_create_character")
-                yield Button("Check", id="btn_check")
+                yield Button("Go Back to Start Screen", id="btn_return")
 
         return super().compose()
 
@@ -105,10 +105,6 @@ class CharacterCreation(ModalScreen):
             "name": name,
             "profession": profession,
             **stats,
-            # "strength": 1,
-            # "intelligence": 2,
-            # "dexterity": 2,
-            # "luck": 4,
         }
         if (msg := create_new_character(**char_dict)) == 0:
             self.notify(
@@ -117,14 +113,14 @@ class CharacterCreation(ModalScreen):
             )
         else:
             self.notify(
-                title="Charcter Creation Failed",
+                title="Character Creation Failed",
                 message=f"Error [red]{msg}[/]",
                 severity="error",
             )
 
-    @on(Button.Pressed, "#btn_check")
-    def check_chars(self):
-        get_all_characters()
+    @on(Button.Pressed, "#btn_return")
+    def go_back(self):
+        self.app.pop_screen()
 
     @on(Select.Changed)
     async def on_select_changed(self, event: Select.Changed):

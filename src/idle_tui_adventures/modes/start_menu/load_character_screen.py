@@ -20,7 +20,7 @@ class CharacterSelection(ModalScreen):
         height:1fr;
 
         Vertical{
-            height:auto;
+            height:1fr;
             width:33%;
         }
     }

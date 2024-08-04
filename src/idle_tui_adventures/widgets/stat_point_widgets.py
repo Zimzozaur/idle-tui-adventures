@@ -46,7 +46,7 @@ class StartStatRandomizer(Vertical):
         return self.query_one("#stat_luck")
 
 
-class StatDisplay(Vertical):
+class StatUpdateDisplay(Vertical):
     DEFAULT_CSS = """
     StatDisplay {
         align: center middle;
