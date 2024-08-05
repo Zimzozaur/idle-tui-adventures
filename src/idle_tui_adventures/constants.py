@@ -21,3 +21,12 @@ ICON_SCREEN_DICT = {
     "shop": "ShopScreen",
     "settings": "SettingsScreen",
 }
+
+MIN_START_STAT = 18
+MAX_START_STAT = 22
+START_STAT_DISTRIBUTION_DICT = {
+    "Warrior": [0.4, 0.2, 0.2, 0.2],
+    "Mage": [0.2, 0.4, 0.2, 0.2],
+    "Ranger": [0.2, 0.2, 0.4, 0.2],
+    "Thief": [0.2, 0.2, 0.2, 0.4],
+}

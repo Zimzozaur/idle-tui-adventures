@@ -7,6 +7,7 @@ from textual.widgets import Digits, Button
 from textual.containers import Horizontal, Vertical
 
 from idle_tui_adventures.constants import STATS_LITERAL, STATS
+from idle_tui_adventures.utils import get_random_amount_start_stats
 
 
 class StartStatRandomizer(Vertical):
@@ -37,7 +38,13 @@ class StartStatRandomizer(Vertical):
         }
 
     def on_button_pressed(self):
-        self.stat_dex.set_value(123)
+        random_stat_dict = get_random_amount_start_stats(
+            profession=self.parent.parent.query_one("#select_profession_choice").value
+        )
+        for stat in STATS:
+            self.query_one(f"#stat_{stat}", StatDisplayWithoutButton).set_value(
+                random_stat_dict[stat]
+            )
 
     @property
     def stat_int(self) -> StatDisplayWithoutButton:

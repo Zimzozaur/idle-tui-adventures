@@ -66,6 +66,7 @@ class CharacterCreation(ModalScreen):
                     options=[(prof, prof) for prof in PROFESSIONS],
                     prompt="Select Profession",
                     allow_blank=False,
+                    id="select_profession_choice",
                 )
                 yield Button("Create", id="btn_create_character")
                 yield Button("Go Back to Start Screen", id="btn_return")
@@ -93,6 +94,7 @@ class CharacterCreation(ModalScreen):
                 title="Character Creation Successful",
                 message=f"[blue]{name}[/], the [blue]{profession}[/] is ready for Adventures",
             )
+            self.dismiss()
         else:
             self.notify(
                 title="Character Creation Failed",
@@ -107,6 +109,7 @@ class CharacterCreation(ModalScreen):
     @on(Select.Changed)
     async def on_select_changed(self, event: Select.Changed):
         selected_class_name = event.value
+        self.query_one(StartStatRandomizer).query_one(Button).press()
         await self.query_one(MenuIcon).remove()
         self.mount(
             MenuIcon(icon=selected_class_name, id=selected_class_name),
