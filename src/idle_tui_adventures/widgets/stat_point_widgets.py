@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-from typing_extensions import Iterable, get_args
+from typing_extensions import Iterable
 
+from textual import on
 from textual.widget import Widget
 from textual.widgets import Digits, Button
 from textual.containers import Horizontal, Vertical
@@ -28,7 +29,7 @@ class StartStatRandomizer(Vertical):
     def compose(self) -> Iterable[Widget]:
         for stat in STATS:
             yield StatDisplayWithoutButton(stat=stat, value=0)
-        yield Button("Randomize")
+        yield Button("Randomize", id="btn_randomize")
         return super().compose()
 
     def get_stat_dict(self):
@@ -37,7 +38,8 @@ class StartStatRandomizer(Vertical):
             for stat in STATS
         }
 
-    def on_button_pressed(self):
+    @on(Button.Pressed, "#btn_randomize")
+    def reroll_stats(self):
         random_stat_dict = get_random_amount_start_stats(
             profession=self.parent.parent.query_one("#select_profession_choice").value
         )
@@ -74,7 +76,7 @@ class StatUpdateDisplay(Vertical):
     """
 
     def compose(self) -> Iterable[Widget]:
-        for stat in get_args(STATS):
+        for stat in STATS:
             yield StatDisplayWithButton(stat=stat, value=0)
         return super().compose()
 

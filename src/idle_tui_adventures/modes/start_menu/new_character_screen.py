@@ -106,8 +106,8 @@ class CharacterCreation(ModalScreen):
     def go_back(self):
         self.app.pop_screen()
 
-    @on(Select.Changed)
-    async def on_select_changed(self, event: Select.Changed):
+    @on(Select.Changed, "#select_profession_choice")
+    async def choose_a_profession(self, event: Select.Changed):
         selected_class_name = event.value
         self.query_one(StartStatRandomizer).query_one(Button).press()
         await self.query_one(MenuIcon).remove()
