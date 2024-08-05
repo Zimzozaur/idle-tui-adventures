@@ -7,8 +7,8 @@ from textual.events import Resize
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
-from textual.widgets import Static
-from textual.containers import Horizontal
+from textual.widgets import Static, Placeholder
+from textual.containers import Horizontal, Vertical
 
 from idle_tui_adventures.constants import MENU_ICONS, ICON_SCREEN_DICT, ICONS_LITERAL
 from idle_tui_adventures.utils import get_icon
@@ -145,3 +145,34 @@ class MenuIconsRow(Horizontal):
     @on(MenuIcon.Pressed, "#icon_settings")
     def action_open_settings(self):
         self.app.switch_mode("Settings")
+
+
+class CharacterPreview(Vertical):
+    DEFAULT_CSS = """
+    CharacterPreview {
+        width:1fr;
+        height:1fr;
+
+        Placeholder {
+            height:60%;
+            width:1fr;
+        }
+        MenuIcon {
+            height:40%;
+            width:1fr;
+            &:hover{
+                border: panel green;
+            }
+        }
+    }
+    """
+
+    def __init__(self, character_infos: tuple):
+        self.character_infos = character_infos
+
+        super().__init__()
+
+    def compose(self) -> Iterable[Widget]:
+        yield MenuIcon(icon=self.character_infos[2], id=self.character_infos[1])
+        yield Placeholder("\n".join([str(i) for i in self.character_infos]))
+        return super().compose()

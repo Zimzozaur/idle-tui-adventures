@@ -2,11 +2,10 @@ from typing import Iterable
 
 from textual.screen import ModalScreen
 from textual.widget import Widget
-from textual.widgets import Placeholder
-from textual.containers import HorizontalScroll, Vertical
+from textual.containers import HorizontalScroll
 
 from idle_tui_adventures.database import get_all_characters
-from idle_tui_adventures.widgets.icon_widgets import MenuIcon
+from idle_tui_adventures.widgets.icon_widgets import CharacterPreview
 
 
 class CharacterSelection(ModalScreen):
@@ -19,23 +18,13 @@ class CharacterSelection(ModalScreen):
         width: 1fr;
         height:1fr;
 
-        Vertical{
+        CharacterPreview {
             height:1fr;
             width:33%;
         }
+
     }
 
-    Placeholder {
-        height:60%;
-        width:1fr;
-    }
-    MenuIcon {
-        height:40%;
-        width:1fr;
-        &:hover{
-            border: panel green;
-        }
-    }
 
     """
 
@@ -43,7 +32,8 @@ class CharacterSelection(ModalScreen):
         self.characters = get_all_characters()
         with HorizontalScroll():
             for char in self.characters:
-                with Vertical():
-                    yield MenuIcon(icon=char[2], id=char[1])
-                    yield Placeholder("\n".join([str(i) for i in char]))
+                yield CharacterPreview(character_infos=char)
+                # with Vertical():
+                #     yield MenuIcon(icon=char[2], id=char[1])
+                #     yield Placeholder("\n".join([str(i) for i in char]))
         return super().compose()
