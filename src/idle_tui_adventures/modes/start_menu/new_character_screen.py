@@ -22,47 +22,34 @@ class CharacterCreation(ModalScreen):
     CharacterCreation {
         content-align:center middle;
         align:center middle;
-    }
 
-    CharacterCreation > Horizontal {
-        layout: grid;
-        grid-size: 2 2;
-        grid-rows: 70% 30%;
-        grid-columns: 1fr;
-        align:center middle;
-
-        & MenuIcon {
-            row-span:2;
-        }
-        & StartStatRandomizer {
-            width:1fr;
-            height: 1fr;
-        }
-        & Button {
-            width:1fr;
-            height: 1fr;
-        }
-    }
-    CharacterCreation > Vertical {
-        align:center middle;
-        text-align: center;
-        width: 1fr;
-
-        Center {
+        & > Horizontal {
+            layout: grid;
+            grid-size: 2 1;
+            grid-columns: 1fr;
             align:center middle;
-            width: 33%;
+            }
+        & > Vertical {
+            align:center middle;
+            text-align: center;
+            width: 1fr;
 
-            Button {
-                width: 1fr;
-                text-align: center;
-                }
-            Input {
-                width: 1fr;
-                text-align: center;
-                }
-            Select {
-                width: 1fr;
-                }
+            Center {
+                align:center middle;
+                width: 33%;
+
+                Button {
+                    width: 1fr;
+                    text-align: center;
+                    }
+                Input {
+                    width: 1fr;
+                    text-align: center;
+                    }
+                Select {
+                    width: 1fr;
+                    }
+            }
         }
     }
 
@@ -70,8 +57,8 @@ class CharacterCreation(ModalScreen):
 
     def compose(self) -> Iterable[Widget]:
         with Horizontal():
+            # profession image mounted here
             yield StartStatRandomizer(id="stat_randomizer")
-            yield Button("Randomize", id="btn_stat_randomizer")
         with Vertical():
             with Center():
                 yield Input(placeholder="Enter Character Name")
@@ -90,11 +77,6 @@ class CharacterCreation(ModalScreen):
         self.mount(
             MenuIcon(icon=start_class, id=start_class), before="#stat_randomizer"
         )
-
-    @on(Button.Pressed, "#btn_stat_randomizer")
-    def reroll_stats(self):
-        self.query_one(StartStatRandomizer).stat_dex.set_value(123)
-        ...
 
     @on(Button.Pressed, "#btn_create_character")
     def create_new_char(self):

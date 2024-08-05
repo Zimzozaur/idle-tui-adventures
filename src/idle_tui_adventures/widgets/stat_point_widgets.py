@@ -14,13 +14,20 @@ class StartStatRandomizer(Vertical):
     StartStatRandomizer {
         align: center middle;
         layout: grid;
-        grid-size: 2 2;
+        grid-size: 2 3;
+
+        & Button {
+        column-span: 2;
+        width:1fr;
+        height:1fr;
+        }
     }
     """
 
     def compose(self) -> Iterable[Widget]:
         for stat in STATS:
             yield StatDisplayWithoutButton(stat=stat, value=0)
+        yield Button("Randomize")
         return super().compose()
 
     def get_stat_dict(self):
@@ -28,6 +35,9 @@ class StartStatRandomizer(Vertical):
             stat: self.query_one(f"#stat_{stat}", StatDisplayWithoutButton).int_value
             for stat in STATS
         }
+
+    def on_button_pressed(self):
+        self.stat_dex.set_value(123)
 
     @property
     def stat_int(self) -> StatDisplayWithoutButton:
