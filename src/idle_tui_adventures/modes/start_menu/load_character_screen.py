@@ -16,7 +16,7 @@ class CharacterSelection(ModalScreen):
     }
     HorizontalScroll {
         width: 1fr;
-        height:1fr;
+        height:auto;
 
         CharacterPreview {
             height:1fr;
@@ -29,11 +29,8 @@ class CharacterSelection(ModalScreen):
     """
 
     def compose(self) -> Iterable[Widget]:
-        self.characters = get_all_characters()
+        self.characters: list[tuple] = get_all_characters()
         with HorizontalScroll():
             for char in self.characters:
                 yield CharacterPreview(character_infos=char)
-                # with Vertical():
-                #     yield MenuIcon(icon=char[2], id=char[1])
-                #     yield Placeholder("\n".join([str(i) for i in char]))
         return super().compose()

@@ -19,10 +19,14 @@ def init_new_db():
     name TEXT UNIQUE NOT NULL,
     profession TEXT NOT NULL,
     created_at TIMESTAMP,
+    level INTEGER NOT NULL,
+    experience INTEGER NOT NULL,
     strength INTEGER NOT NULL,
     intelligence INTEGER NOT NULL,
     dexterity INTEGER NOT NULL,
     luck INTEGER NOT NULL,
+    major_stage INTEGER NOT NULL,
+    minor_stage INTEGER NOT NULL,
     Check (name <> ""),
     Check (profession in ('Mage', 'Warrior', 'Ranger', 'Thief'))
     );
@@ -64,26 +68,6 @@ def init_new_db():
             con.execute(STORAGE_DB_CREATION)
             con.executescript(INDEXES_CREATION)
             return 1
-            # data_character = {'name':'Zaloog', 'profession': 'Rogue', 'strength': 1,
-            #                 'intelligence': 2, 'dexterity': 3, 'luck':4, 'time':datetime.now()}
-            # cu.execute("INSERT INTO characters VALUES (NULL, :name, :profession, :time, :strength, :intelligence, :dexterity, :luck)", data_character)
-            # data_item = ({'name':'Sword of Kill', 'rarity': 'rare', 'category':'weapon' , 'damage': 2, 'attack_speed': 0.8},
-            #             {'name':'Staff of Kill', 'rarity': 'rare', 'category':'weapon' , 'damage': 2, 'attack_speed': 0.8})
-            # cu.executemany("INSERT INTO items VALUES (NULL, :name, :rarity, :category, :damage, :attack_speed)", data_item)
-            # storage_item = {'name':'Sword of Kill', 'rarity': 'rare', 'category':'weapon' , 'damage': 2, 'attack_speed': 0.8}
-            # con.execute("INSERT INTO storages VALUES (NULL, :name, :rarity, :category, :damage, :attack_speed)", data_item)
-            # Retrieve character_id and item_id
-            # cu.execute("SELECT character_id FROM characters WHERE name = ?", (data_character['name'],))
-            # character_id = cu.fetchone()[0]
-
-            # cu.execute("SELECT item_id FROM items WHERE name = ?", (data_item[1]['name'],))
-            # item_id = cu.fetchone()[0]
-
-            # # Insert into storages
-            # storage_data = {'character_id': character_id, 'item_id': item_id}
-            # cu.execute("INSERT INTO storages (character_id, item_id) VALUES (:character_id, :item_id)", storage_data)
-
-            # con.commit()
         except sqlite3.Error as e:
             print(e)
             con.rollback()
@@ -106,6 +90,10 @@ def create_new_character(
         "dexterity": dexterity,
         "luck": luck,
         "creation_time": datetime.now().replace(microsecond=0),
+        "level": 1,
+        "experience": 0,
+        "major_stage": 1,
+        "minor_stage": 1,
     }
 
     transaction = """
@@ -115,10 +103,15 @@ def create_new_character(
         :name,
         :profession,
         :creation_time,
+        :level,
+        :experience,
         :strength,
         :intelligence,
         :dexterity,
-        :luck);"""
+        :luck,
+        :major_stage,
+        :minor_stage
+        );"""
 
     connection = create_connection()
     with connection as con:

@@ -154,16 +154,16 @@ class CharacterPreview(Vertical):
         width:1fr;
         height:1fr;
 
-        Placeholder {
-            height:60%;
+
+        Label {
+            height:auto;
             width:1fr;
+            text-align: center;
+            border:solid brown;
         }
         MenuIcon {
             height:40%;
             width:1fr;
-            &:hover{
-                border: panel green;
-            }
         }
     }
     """
@@ -177,4 +177,7 @@ class CharacterPreview(Vertical):
         yield MenuIcon(icon=self.character.profession, id=self.character.char_id)
         yield Label(self.character.name)
         yield Label(self.character.created_at)
+        yield Label(f"Level: {self.character.level}")
+        yield Label(f"Experience: {self.character.experience}")
+        yield Label(f"Stage: {self.character.major_stage}-{self.character.minor_stage}")
         return super().compose()
