@@ -1,24 +1,25 @@
 from dataclasses import dataclass
+from datetime import datetime
+
+from idle_tui_adventures.constants import PROFESSIONS_LITERAL
 
 
 @dataclass
 class Character:
-    character_data: tuple
+    character_id: int
+    name: str
+    profession: PROFESSIONS_LITERAL
+    created_at: datetime
+    level: int
+    experience: int
+    strength: int
+    intelligence: int
+    dexterity: int
+    luck: int
+    major_stage: int
+    minor_stage: int
 
     def __post_init__(self) -> None:
-        self.char_id = self.character_data[0]
-        self.name = self.character_data[1]
-        self.profession = self.character_data[2]
-        self.created_at = self.character_data[3]
-        self.level = self.character_data[4]
-        self.experience = self.character_data[5]
-        self.base_str = self.character_data[6]
-        self.base_int = self.character_data[7]
-        self.base_dex = self.character_data[8]
-        self.base_luc = self.character_data[9]
-        self.major_stage = self.character_data[10]
-        self.minor_stage = self.character_data[11]
-
         self.equipped_items = self.get_equipped_items()
         self.inventory_items = self.get_inventory_items()
 

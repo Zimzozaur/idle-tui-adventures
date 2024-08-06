@@ -1,4 +1,5 @@
 from typing import Iterable
+from sqlite3 import Row
 
 from textual.screen import ModalScreen
 from textual.widget import Widget
@@ -29,8 +30,8 @@ class CharacterSelection(ModalScreen):
     """
 
     def compose(self) -> Iterable[Widget]:
-        self.characters: list[tuple] = get_all_characters()
+        self.characters: list[Row] = get_all_characters()
         with HorizontalScroll():
-            for char in self.characters:
-                yield CharacterPreview(character_infos=char)
+            for char_data in self.characters:
+                yield CharacterPreview(character_data=char_data)
         return super().compose()

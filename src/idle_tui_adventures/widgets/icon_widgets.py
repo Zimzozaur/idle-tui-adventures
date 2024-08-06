@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing_extensions import Self, Iterable
+from sqlite3 import Row
 
 from textual import on
 from textual.events import Resize
@@ -168,13 +169,15 @@ class CharacterPreview(Vertical):
     }
     """
 
-    def __init__(self, character_infos: tuple):
-        self.character: Character = Character(character_data=character_infos)
+    def __init__(self, character_data: Row):
+        self.character: Character = Character(**dict(character_data))
 
         super().__init__()
 
     def compose(self) -> Iterable[Widget]:
-        yield MenuIcon(icon=self.character.profession, id=self.character.char_id)
+        yield MenuIcon(
+            icon=self.character.profession, id=str(self.character.character_id)
+        )
         yield Label(self.character.name)
         yield Label(self.character.created_at)
         yield Label(f"Level: {self.character.level}")

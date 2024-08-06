@@ -62,6 +62,7 @@ def init_new_db():
 
     connection = create_connection()
     with connection as con:
+        con.row_factory = sqlite3.Row
         try:
             con.execute(CHAR_DB_CREATION)
             con.execute(ITEM_DB_CREATION)
@@ -115,9 +116,10 @@ def create_new_character(
 
     connection = create_connection()
     with connection as con:
-        cu = con.cursor()
+        con.row_factory = sqlite3.Row
+        # cu = con.cursor()
         try:
-            cu.execute(transaction, data_character_dict)
+            con.execute(transaction, data_character_dict)
             con.commit()
             return 0
         except sqlite3.Error as e:
@@ -129,9 +131,10 @@ def create_new_character(
             return e.sqlite_errorname
 
 
-def get_all_characters() -> list[tuple]:
+def get_all_characters() -> list[sqlite3.Row]:
     characters = []
     with create_connection() as con:
+        con.row_factory = sqlite3.Row
         try:
             for row in con.execute("select * from characters").fetchall():
                 characters.append(row)
