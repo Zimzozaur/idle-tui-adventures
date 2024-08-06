@@ -38,8 +38,13 @@ def init_new_db():
     name TEXT UNIQUE NOT NULL,
     rarity TEXT NOT NULL,
     category TEXT NOT NULL,
+    level_needed INTEGER NOT NULL,
     damage INTEGER NOT NULL,
     attack_speed REAL NOT NULL
+    strength INTEGER NOT NULL,
+    intelligence INTEGER NOT NULL,
+    dexterity INTEGER NOT NULL,
+    luck INTEGER NOT NULL,
     );
     """
 

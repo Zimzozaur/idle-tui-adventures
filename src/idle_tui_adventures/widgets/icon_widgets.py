@@ -6,7 +6,7 @@ from sqlite3 import Row
 
 from textual import on
 from textual.reactive import reactive
-from textual.events import Click, Resize
+from textual.events import Click, MouseDown, Resize
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
@@ -190,46 +190,47 @@ class CharacterPreview(Vertical):
         return super().compose()
 
 
-class DragableSlot(MenuIcon):
+class ItemSlot(Static):
     amount: reactive = reactive(0)
-    DEFAULT_CSS = """
-    DragableSlot {
-        border: solid brown;
-    }
-    """
+
+    DEFAULT_CSS = """ItemSlot {
+        width: 1fr;
+        height: 1fr;
+        align: center middle;
+        content-align: center middle;
+        background: #ba9f68;
+        border:outer #6a4f32;
+        border-subtitle-background:#6a4f32;
+
+    }"""
+
+    def __init__(self, id: str | None = None) -> None:
+        super().__init__(id=id)
 
     def compose(self) -> Iterable[Widget]:
-        # yield MenuIcon('Warrior', id='upper_stat')
-        self.tooltip = f"{self.amount} stacked"
-        self.border_subtitle = f"{self.amount} stacked"
+        self.styles.border_subtitle_color = "yellow"
+        self.border_subtitle = f"{self.amount} x" if self.amount else ""
+        yield Static(renderable=get_icon("Mage"))
         return super().compose()
 
-    def _on_click(self, event: Click) -> Coroutine[Any, Any, None]:
-        if event.button == 1:  # left click
-            self.remove_item()
-        elif event.button == 3:  # right click
-            self.add_item()
-        return super()._on_click(event)
+    @on(Click)
+    def show_popup(self, event):
+        self.query_one(Static).remove()
+        return super()._on_click(event=event)
 
-    def remove_item(self):
-        if self.amount > 1:
-            self.amount -= 1
-            self.tooltip = f"{self.amount} stacked"
-            self.border_subtitle = f"{self.amount} stacked"
-        elif self.amount == 1:
-            self.amount -= 1
-            self.tooltip = f"{self.amount} stacked"
-            self.border_subtitle = f"{self.amount} stacked"
-            self.query_one("#stacked").remove()
+    @property
+    def empty(self) -> bool:
+        return len(self.children) == 0
 
-    def add_item(self):
-        if self.amount >= 1:
-            self.amount += 1
-            self.tooltip = f"{self.amount} stacked"
-            self.border_subtitle = f"{self.amount} stacked"
+    def place_item(self, item) -> None:
+        if self.empty:
+            self.mount(item)
         else:
-            self.amount += 1
-            self.border_subtitle = f"{self.amount} stacked"
-            self.tooltip = f"{self.amount} stacked"
-            new_icon = MenuIcon("Warrior", id="stacked")
-            self.mount(new_icon)
+            pass
+
+    def _on_mouse_down(self, event: MouseDown) -> Coroutine[Any, Any, None]:
+        self.query_one(Static).remove()
+        return super()._on_mouse_down(event)
+
+    # weiterer Static drauf
+    # bei mouse_down obere static in modal mit offset
