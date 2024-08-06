@@ -29,5 +29,5 @@ class IdleAdventure(App[None]):
     MODES = {"Start": StartScreen, "Main": MainScreen, "Settings": SettingsScreen}
 
     def on_mount(self):
-        self.switch_mode(mode="Start")
-        # self.switch_mode(mode="Main")
+        # self.switch_mode(mode="Start")
+        self.switch_mode(mode="Main")

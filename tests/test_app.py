@@ -46,22 +46,22 @@ async def test_main_screen_buttons():
 
         await pilot.press("c")
         assert app.screen.name == "CharacterScreen"
-        await pilot.click("#icon_character")
+        await pilot.click("#character")
         assert app.screen.name == "MainScreen"
         await pilot.press("c")
         assert app.screen.name == "CharacterScreen"
 
-        await pilot.click("#icon_backpack")
+        await pilot.click("#backpack")
         assert app.screen.name == "InventoryEquipScreen"
         await pilot.press("b")
         assert app.screen.name == "MainScreen"
 
         await pilot.press("d")
         assert app.screen.name == "DungeonScreen"
-        await pilot.click("#icon_shop")
+        await pilot.click("#shop")
         assert app.screen.name == "ShopScreen"
 
-        await pilot.click("#icon_settings")
+        await pilot.click("#settings")
         assert app.screen.name == "SettingsScreen"
 
         await pilot.press("escape")
@@ -71,12 +71,12 @@ async def test_main_screen_buttons():
 
         await pilot.press("b")
         assert app.screen.name == "InventoryEquipScreen"
-        await pilot.click("#icon_character")
+        await pilot.click("#character")
         assert app.screen.name == "CharacterScreen"
 
         await pilot.press("d")
         assert app.screen.name == "DungeonScreen"
-        await pilot.click("#icon_dungeon")
+        await pilot.click("#dungeon")
         assert app.screen.name == "MainScreen"
 
         await pilot.press("l")

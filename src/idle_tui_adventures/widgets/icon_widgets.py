@@ -1,10 +1,12 @@
 from __future__ import annotations
+from typing import Coroutine, Any
 
 from typing_extensions import Self, Iterable
 from sqlite3 import Row
 
 from textual import on
-from textual.events import Resize
+from textual.reactive import reactive
+from textual.events import Click, Resize
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
@@ -41,7 +43,7 @@ class MenuIcon(Static):
         self.icon_name = icon
         self.icon_img = get_icon(icon=self.icon_name)
 
-        super().__init__(self.icon_img, id=f"icon_{id}")
+        super().__init__(self.icon_img, id=id)
 
     def press(self) -> Self:
         # Manage the "active" effect:
@@ -100,7 +102,7 @@ class MenuIconsRow(Horizontal):
 
         return super().compose()
 
-    @on(MenuIcon.Pressed, "#icon_character")
+    @on(MenuIcon.Pressed, "#character")
     def action_open_character(self):
         icon = "character"
         if self.screen.name == ICON_SCREEN_DICT[icon]:
@@ -111,7 +113,7 @@ class MenuIconsRow(Horizontal):
             self.app.pop_screen()
             self.app.push_screen(ICON_SCREEN_DICT[icon])
 
-    @on(MenuIcon.Pressed, "#icon_backpack")
+    @on(MenuIcon.Pressed, "#backpack")
     def action_open_backpack(self):
         icon = "backpack"
         if self.screen.name == ICON_SCREEN_DICT[icon]:
@@ -122,7 +124,7 @@ class MenuIconsRow(Horizontal):
             self.app.pop_screen()
             self.app.push_screen(ICON_SCREEN_DICT[icon])
 
-    @on(MenuIcon.Pressed, "#icon_dungeon")
+    @on(MenuIcon.Pressed, "#dungeon")
     def action_open_dungeon(self):
         icon = "dungeon"
         if self.screen.name == ICON_SCREEN_DICT[icon]:
@@ -133,7 +135,7 @@ class MenuIconsRow(Horizontal):
             self.app.pop_screen()
             self.app.push_screen(ICON_SCREEN_DICT[icon])
 
-    @on(MenuIcon.Pressed, "#icon_shop")
+    @on(MenuIcon.Pressed, "#shop")
     def action_open_shop(self):
         icon = "shop"
         if self.screen.name == ICON_SCREEN_DICT[icon]:
@@ -144,7 +146,7 @@ class MenuIconsRow(Horizontal):
             self.app.pop_screen()
             self.app.push_screen(ICON_SCREEN_DICT[icon])
 
-    @on(MenuIcon.Pressed, "#icon_settings")
+    @on(MenuIcon.Pressed, "#settings")
     def action_open_settings(self):
         self.app.switch_mode("Settings")
 
@@ -177,7 +179,8 @@ class CharacterPreview(Vertical):
 
     def compose(self) -> Iterable[Widget]:
         yield MenuIcon(
-            icon=self.character.profession, id=str(self.character.character_id)
+            icon=self.character.profession,
+            id=f"character_{self.character.character_id}",
         )
         yield Label(self.character.name)
         yield Label(self.character.created_at)
@@ -185,3 +188,48 @@ class CharacterPreview(Vertical):
         yield Label(f"Experience: {self.character.experience}")
         yield Label(f"Stage: {self.character.major_stage}-{self.character.minor_stage}")
         return super().compose()
+
+
+class DragableSlot(MenuIcon):
+    amount: reactive = reactive(0)
+    DEFAULT_CSS = """
+    DragableSlot {
+        border: solid brown;
+    }
+    """
+
+    def compose(self) -> Iterable[Widget]:
+        # yield MenuIcon('Warrior', id='upper_stat')
+        self.tooltip = f"{self.amount} stacked"
+        self.border_subtitle = f"{self.amount} stacked"
+        return super().compose()
+
+    def _on_click(self, event: Click) -> Coroutine[Any, Any, None]:
+        if event.button == 1:  # left click
+            self.remove_item()
+        elif event.button == 3:  # right click
+            self.add_item()
+        return super()._on_click(event)
+
+    def remove_item(self):
+        if self.amount > 1:
+            self.amount -= 1
+            self.tooltip = f"{self.amount} stacked"
+            self.border_subtitle = f"{self.amount} stacked"
+        elif self.amount == 1:
+            self.amount -= 1
+            self.tooltip = f"{self.amount} stacked"
+            self.border_subtitle = f"{self.amount} stacked"
+            self.query_one("#stacked").remove()
+
+    def add_item(self):
+        if self.amount >= 1:
+            self.amount += 1
+            self.tooltip = f"{self.amount} stacked"
+            self.border_subtitle = f"{self.amount} stacked"
+        else:
+            self.amount += 1
+            self.border_subtitle = f"{self.amount} stacked"
+            self.tooltip = f"{self.amount} stacked"
+            new_icon = MenuIcon("Warrior", id="stacked")
+            self.mount(new_icon)

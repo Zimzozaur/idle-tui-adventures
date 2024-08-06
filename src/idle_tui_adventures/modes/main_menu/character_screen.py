@@ -31,6 +31,6 @@ class CharacterScreen(ModalScreen):
         return super().compose()
 
     def _on_mount(self, event: Mount) -> None:
-        self.query_one("#icon_character").add_class("-active")
+        self.query_one("#character").add_class("-active")
         self.log.error("set to active")
         return super()._on_mount(event)
