@@ -105,7 +105,7 @@ def create_new_character(
         "intelligence": intelligence,
         "dexterity": dexterity,
         "luck": luck,
-        "creation_time": datetime.now(),
+        "creation_time": datetime.now().replace(microsecond=0),
     }
 
     transaction = """

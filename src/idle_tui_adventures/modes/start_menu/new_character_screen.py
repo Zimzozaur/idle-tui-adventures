@@ -93,21 +93,24 @@ class CharacterCreation(ModalScreen):
             self.notify(
                 title="Character Creation Successful",
                 message=f"[blue]{name}[/], the [blue]{profession}[/] is ready for Adventures",
+                timeout=1.0,
             )
+            # Create Character and go back to Start Screen
             self.dismiss()
         else:
             self.notify(
                 title="Character Creation Failed",
                 message=f"Error [red]{msg}[/]",
                 severity="error",
+                timeout=3.0,
             )
 
     @on(Button.Pressed, "#btn_return")
-    def go_back(self):
+    def go_to_start_screen(self):
         self.app.pop_screen()
 
     @on(Select.Changed, "#select_profession_choice")
-    async def choose_a_profession(self, event: Select.Changed):
+    async def select_a_profession(self, event: Select.Changed):
         selected_class_name = event.value
         self.query_one(StartStatRandomizer).query_one(Button).press()
         await self.query_one(MenuIcon).remove()
