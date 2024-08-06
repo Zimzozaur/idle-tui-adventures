@@ -157,13 +157,14 @@ class CharacterPreview(Vertical):
 
 
         Label {
-            height:auto;
+            height:10%;
             width:1fr;
+            content-align:center middle;
             text-align: center;
             border:solid brown;
         }
         MenuIcon {
-            height:40%;
+            height:50%;
             width:1fr;
         }
     }

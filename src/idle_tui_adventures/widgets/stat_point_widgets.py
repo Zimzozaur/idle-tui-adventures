@@ -109,6 +109,14 @@ class StatDisplayWithoutButton(Digits):
     def int_value(self) -> int:
         return int(self.value)
 
+    def highlight_main_stat(self):
+        self.border_subtitle = "Main Attribute"
+        self.styles.border_subtitle_color = "yellow"
+
+    def reset_highlight(self):
+        self.border_subtitle = None
+        self.styles.border_subtitle_color = None
+
 
 class StatDisplayWithButton(Horizontal):
     DEFAULT_CSS = """ StatDisplayWithButton {

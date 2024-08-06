@@ -30,3 +30,9 @@ START_STAT_DISTRIBUTION_DICT = {
     "Ranger": [0.2, 0.2, 0.4, 0.2],
     "Thief": [0.2, 0.2, 0.2, 0.4],
 }
+PROFESSION_MAINSTAT_DICT = {
+    "Warrior": "strength",
+    "Mage": "intelligence",
+    "Ranger": "dexterity",
+    "Thief": "luck",
+}

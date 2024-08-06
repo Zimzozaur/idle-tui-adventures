@@ -19,7 +19,7 @@ class CharacterSelection(ModalScreen):
 
         Button {
             align:center middle;
-            height: 20%;
+            height: 10%;
             width:1fr;
         }
         HorizontalScroll {
