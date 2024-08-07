@@ -14,7 +14,8 @@ from textual.widgets import Static, Label
 from textual.containers import Horizontal, Vertical
 
 from idle_tui_adventures.constants import MENU_ICONS, ICON_SCREEN_DICT, ICONS_LITERAL
-from idle_tui_adventures.classes.character import Character
+from idle_tui_adventures.classes.characters import Character
+from idle_tui_adventures.classes.items import Item
 from idle_tui_adventures.utils import get_icon
 
 
@@ -234,3 +235,8 @@ class ItemSlot(Static):
 
     # weiterer Static drauf
     # bei mouse_down obere static in modal mit offset
+
+
+class ItemIcon(Static):
+    def __init__(self, item: Item) -> None:
+        super().__init__()
