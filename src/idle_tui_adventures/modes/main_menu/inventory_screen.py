@@ -2,6 +2,7 @@ from typing import Iterable, Any, Coroutine
 
 from textual import on
 from textual.events import Mount, Key, MouseDown
+from textual.geometry import Offset
 from textual.widget import Widget
 from textual.screen import ModalScreen
 
@@ -13,7 +14,8 @@ from idle_tui_adventures.widgets.inventory_screen_widgets import (
 )
 from idle_tui_adventures.classes.items import Item
 from idle_tui_adventures.widgets.modal_floating_screen import ItemPopUpScreen
-from idle_tui_adventures.database import create_new_item, get_all_items
+from idle_tui_adventures.database.db_transactions import create_new_item
+from idle_tui_adventures.database.db_queries import get_all_items
 
 
 class InventoryEquipScreen(ModalScreen):
@@ -41,6 +43,7 @@ class InventoryEquipScreen(ModalScreen):
         self.query_one("#backpack").add_class("-active")
         return super()._on_mount(event)
 
+    # Temporary
     def _on_key(self, event: Key) -> Coroutine[Any, Any, None]:
         key_pressed = event.key
         if key_pressed == "space":
@@ -79,7 +82,7 @@ class InventoryEquipScreen(ModalScreen):
                     callback=self.relocate_item,
                 )
 
-    def relocate_item(self, movement_instructions: tuple | None):
+    def relocate_item(self, movement_instructions: tuple[Offset, Offset, Item] | None):
         if movement_instructions is not None:
             initial_slot_widget: Slot = list(
                 self.get_widgets_at(*movement_instructions[0])

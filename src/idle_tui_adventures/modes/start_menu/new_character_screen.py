@@ -6,7 +6,7 @@ from textual.widget import Widget
 from textual.widgets import Button, Input, Select
 from textual.containers import Vertical, Horizontal, Center
 
-from idle_tui_adventures.database import create_new_character
+from idle_tui_adventures.database.db_transactions import create_new_character
 from idle_tui_adventures.widgets.stat_point_widgets import (
     StartStatRandomizer,
     StatDisplayWithoutButton,

@@ -7,6 +7,7 @@
         - Items Equipped
             - query function
         - Inventory
+            - query function
         - Progress Infos
             - Level
             - Exp
@@ -56,16 +57,10 @@
             - Stage X/1 -> X/10 -> Boss -> X+1/1...
     - pop ups
         - character stats
-        - inventory equip
-            - custom Widget Dragable?
-                -   top layer
-                -   bottom layer
             - define db schema
             - drag n drop
                 - update in db
                 - tool tip item stats
-                - get item image at inventory position
-                -
 
 - Settings Screen
     - Statistics?

@@ -6,7 +6,7 @@ from textual.widget import Widget
 from textual.containers import HorizontalScroll
 from textual.widgets import Button
 
-from idle_tui_adventures.database import get_all_characters
+from idle_tui_adventures.database.db_queries import get_all_characters
 from idle_tui_adventures.widgets.icon_widgets import CharacterPreview
 
 

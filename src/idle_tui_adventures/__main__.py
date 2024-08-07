@@ -1,5 +1,5 @@
 from idle_tui_adventures.app import IdleAdventure
-from idle_tui_adventures.database import init_new_db
+from idle_tui_adventures.database.db_utils import init_new_db
 
 
 def run():

@@ -113,8 +113,7 @@ class ItemSlot(Slot):
         super().__init__(id)
 
     def is_valid(self, item: Item) -> bool:
-        # if not self.region.contains_point(self.app.mouse_position):
-        #     return False
+        # item stackable?
         if not self.empty:
             return False
         return True
@@ -143,8 +142,6 @@ class EquipSlot(Slot):
         super().__init__(id)
 
     def is_valid(self, item: Item) -> bool:
-        # if not self.region.contains_point(self.app.mouse_position):
-        #     return False
         if self.category != item.category:
             return False
         if not self.empty:
