@@ -9,6 +9,8 @@ from idle_tui_adventures.constants import INVENTORY_SIZE
 
 
 class Inventory(Grid):
+    inventory_dict: dict
+
     DEFAULT_CSS = (
         """
     Inventory {

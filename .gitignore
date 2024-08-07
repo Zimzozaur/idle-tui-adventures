@@ -13,3 +13,6 @@ wheels/
 
 # Developer stuff
 *.db
+
+# Images
+Pack_of_Medieval_Tools/

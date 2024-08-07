@@ -2,12 +2,13 @@ from typing import Iterable, Any, Coroutine
 
 from textual.events import Mount, Key
 from textual.widget import Widget
-from textual.widgets import Static, Placeholder
+from textual.widgets import Placeholder
 from textual.screen import ModalScreen
 
-from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow
+from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow, ItemIcon
 from idle_tui_adventures.widgets.inventory_screen_widgets import Inventory
-from idle_tui_adventures.utils import get_icon
+from idle_tui_adventures.classes.items import Item
+from idle_tui_adventures.database import create_new_item, get_all_items
 
 
 class InventoryEquipScreen(ModalScreen):
@@ -44,9 +45,24 @@ class InventoryEquipScreen(ModalScreen):
 
     def _on_key(self, event: Key) -> Coroutine[Any, Any, None]:
         key_pressed = event.key
+        if key_pressed == "space":
+            create_new_item(
+                name="Axe of Ordinary",
+                level_needed=1,
+                category="Weapon",
+                rarity="unique",
+                damage=3,
+                attack_speed=1.05,
+                strength=0,
+                intelligence=0,
+                dexterity=0,
+                luck=2,
+            )
+            self.notify("Item Created")
+
         try:
             self.query_one(Inventory).query_one(f"#slot_{key_pressed}").place_item(
-                Static(get_icon("Mage"))
+                ItemIcon(item=Item(**get_all_items()[0]))
             )
             self.notify(f"That key was pressed {key_pressed}")
         except Exception as e:

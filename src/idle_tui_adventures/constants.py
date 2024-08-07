@@ -28,13 +28,18 @@ PROFESSION_MAINSTAT_DICT = {
 RARITIES_LITERAL = Literal["common", "rare", "epic", "legendary", "unique"]
 RARITIES = get_args(RARITIES_LITERAL)
 ITEM_RARITIES_COLOR_DICT = {
-    "common": "",
+    "common": "green",
+    "rare": "blue",
+    "epic": "red",
+    "orange": "orange",
+    "unique": "#aefdfd",
 }
 
 # Item-category
 ITEM_CATEGORIES_LITERAL = Literal[
-    "Item",
+    "Consumable",
     "Weapon",
+    "Armor",
 ]
 ITEM_CATEGORIES = get_args(ITEM_CATEGORIES_LITERAL)
 
@@ -45,7 +50,7 @@ MENU_ICONS = get_args(MENU_ICONS_LITERAL)
 # Icons-professions
 PROFESSIONS_LITERAL = Literal["Warrior", "Mage", "Ranger", "Thief"]
 PROFESSIONS = get_args(PROFESSIONS_LITERAL)
-ICONS_LITERAL = MENU_ICONS_LITERAL | PROFESSIONS_LITERAL
+ICONS_LITERAL = MENU_ICONS_LITERAL | PROFESSIONS_LITERAL | ITEM_CATEGORIES_LITERAL
 ICON_SCREEN_DICT = {
     "character": "CharacterScreen",
     "backpack": "InventoryEquipScreen",

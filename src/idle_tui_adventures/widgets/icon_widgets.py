@@ -13,7 +13,12 @@ from textual.widget import Widget
 from textual.widgets import Static, Label
 from textual.containers import Horizontal, Vertical
 
-from idle_tui_adventures.constants import MENU_ICONS, ICON_SCREEN_DICT, ICONS_LITERAL
+from idle_tui_adventures.constants import (
+    MENU_ICONS,
+    ICON_SCREEN_DICT,
+    ICONS_LITERAL,
+    ITEM_RARITIES_COLOR_DICT,
+)
 from idle_tui_adventures.classes.characters import Character
 from idle_tui_adventures.classes.items import Item
 from idle_tui_adventures.utils import get_icon
@@ -214,11 +219,6 @@ class ItemSlot(Static):
         yield Static(renderable=get_icon("Mage"))
         return super().compose()
 
-    @on(Click)
-    def show_popup(self, event):
-        self.query_one(Static).remove()
-        return super()._on_click(event=event)
-
     @property
     def empty(self) -> bool:
         return len(self.children) == 0
@@ -230,7 +230,11 @@ class ItemSlot(Static):
             pass
 
     def _on_mouse_down(self, event: MouseDown) -> Coroutine[Any, Any, None]:
-        self.query_one(Static).remove()
+        if event.button == 3:
+            try:
+                self.query_one(Static).remove()
+            except Exception as e:
+                self.notify(e)
         return super()._on_mouse_down(event)
 
     # weiterer Static drauf
@@ -238,5 +242,36 @@ class ItemSlot(Static):
 
 
 class ItemIcon(Static):
+    DEFAULT_CSS = """
+    ItemIcon {
+        width: 1fr;
+        height: 1fr;
+        align: center middle;
+        content-align: center middle;
+    }
+    """
+
     def __init__(self, item: Item) -> None:
+        self.item = item
         super().__init__()
+
+    def compose(self) -> Iterable[Widget]:
+        self.update(get_icon(icon=self.item.category))
+        self.styles.background = ITEM_RARITIES_COLOR_DICT[self.item.rarity]
+        self.tooltip = self.item.__repr__()
+        return super().compose()
+
+    @on(Click)
+    def show_popup(self, event: Click):
+        if event.button == 1:
+            self.remove()
+        return super()._on_click(event=event)
+
+    @on(Resize)
+    def keep_image_size(self, event: Resize) -> None:
+        new_width, new_height = event.size
+        self.update(
+            get_icon(
+                icon=self.item.category, width=new_width, heigth=int(1.8 * new_height)
+            )
+        )

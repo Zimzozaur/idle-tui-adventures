@@ -2,7 +2,12 @@ import sqlite3
 from pathlib import Path
 from datetime import datetime
 
-from idle_tui_adventures.constants import DB_FULLNAME
+from idle_tui_adventures.constants import (
+    DB_FULLNAME,
+    PROFESSIONS_LITERAL,
+    RARITIES_LITERAL,
+    ITEM_CATEGORIES_LITERAL,
+)
 
 
 def create_connection(database: Path = DB_FULLNAME) -> sqlite3.Connection:
@@ -40,11 +45,11 @@ def init_new_db():
     category TEXT NOT NULL,
     level_needed INTEGER NOT NULL,
     damage INTEGER NOT NULL,
-    attack_speed REAL NOT NULL
+    attack_speed REAL NOT NULL,
     strength INTEGER NOT NULL,
     intelligence INTEGER NOT NULL,
     dexterity INTEGER NOT NULL,
-    luck INTEGER NOT NULL,
+    luck INTEGER NOT NULL
     );
     """
 
@@ -82,7 +87,7 @@ def init_new_db():
 
 def create_new_character(
     name: str,
-    profession: str,
+    profession: PROFESSIONS_LITERAL,
     strength: int,
     intelligence: int,
     dexterity: int,
@@ -187,6 +192,76 @@ def get_items_for_character(character_name: str):
 
         for item in items:
             print(item)
+
+
+def create_new_item(
+    name: str,
+    level_needed: int,
+    rarity: RARITIES_LITERAL,
+    category: ITEM_CATEGORIES_LITERAL,
+    damage: int,
+    attack_speed: float,
+    strength: int,
+    intelligence: int,
+    dexterity: int,
+    luck: int,
+) -> str | int:
+    data_item_dict = {
+        "name": name,
+        "rarity": rarity,
+        "category": category,
+        "level_needed": level_needed,
+        "damage": damage,
+        "attack_speed": attack_speed,
+        "strength": strength,
+        "intelligence": intelligence,
+        "dexterity": dexterity,
+        "luck": luck,
+    }
+
+    transaction = """
+    INSERT INTO items
+    VALUES (
+        NULL,
+        :name,
+        :rarity,
+        :category,
+        :level_needed,
+        :damage,
+        :attack_speed,
+        :strength,
+        :intelligence,
+        :dexterity,
+        :luck
+        );"""
+
+    connection = create_connection()
+    with connection as con:
+        con.row_factory = sqlite3.Row
+        try:
+            con.execute(transaction, data_item_dict)
+            con.commit()
+            return 0
+        except sqlite3.Error as e:
+            con.rollback()
+            if e.sqlite_errorcode == sqlite3.SQLITE_CONSTRAINT_CHECK:
+                return "Item Insertion Error"
+            elif e.sqlite_errorcode == sqlite3.SQLITE_CONSTRAINT_UNIQUE:
+                return "Iterm Insertion Error"
+            return e.sqlite_errorname
+
+
+def get_all_items() -> list[sqlite3.Row]:
+    items = []
+    with create_connection() as con:
+        con.row_factory = sqlite3.Row
+        try:
+            for row in con.execute("select * from items").fetchall():
+                items.append(row)
+            return items
+        except sqlite3.Error as e:
+            print(e)
+            return items
 
 
 # Update
