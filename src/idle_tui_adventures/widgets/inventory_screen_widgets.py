@@ -7,6 +7,8 @@ from textual.widgets import Static
 from textual.containers import Grid
 
 from idle_tui_adventures.constants import INVENTORY_SIZE, ITEM_CATEGORIES_LITERAL
+from idle_tui_adventures.classes.items import Item
+from idle_tui_adventures.widgets.icon_widgets import ItemIcon
 
 
 class Inventory(Grid):
@@ -58,13 +60,14 @@ class Equipment(Grid):
     # place items
     def compose(self) -> Iterable[Widget]:
         for i in range(prod(INVENTORY_SIZE)):
-            yield EquipSlot(id=f"slot_{i}")
+            yield EquipSlot(id=f"slot_{i}", category="Weapon")
 
         return super().compose()
 
 
 class Slot(Static):
     amount: reactive = reactive(0)
+    empty: reactive = reactive(True)
 
     def __init__(self, id: str | None = None) -> None:
         super().__init__(id=id)
@@ -72,34 +75,26 @@ class Slot(Static):
     def compose(self) -> Iterable[Widget]:
         self.styles.border_subtitle_color = "yellow"
         self.border_subtitle = f"{self.amount} x" if self.amount else ""
-        # yield Static(renderable=get_icon("Mage"))
         return super().compose()
 
-    @property
-    def empty(self) -> bool:
-        return len(self.children) == 0
-
-    def place_item(self, item) -> None:
+    def place_item(self, item: Item) -> None:
         if self.empty:
             self.mount(item)
             self.amount = 1
+            self.empty = False
         else:
             pass
 
-    def watch_amount(self, value):
+    def remove_item(self) -> None:
+        if not self.empty:
+            self.query_one(ItemIcon).remove()
+            self.amount -= 1
+            self.empty = True
+        else:
+            pass
+
+    def watch_amount(self):
         self.border_subtitle = f"{self.amount} x" if self.amount else ""
-
-    # def _on_mouse_down(self, event: MouseDown) -> Coroutine[Any, Any, None]:
-    #     if event.button == 1:
-    #         try:
-    #             self.query_one(Static).remove()
-    #             self.amount -= 1
-    #         except Exception as e:
-    #             self.notify(str(e))
-    #     return super()._on_mouse_down(event)
-
-    # weiterer Static drauf
-    # bei mouse_down obere static in modal mit offset
 
 
 class ItemSlot(Slot):
@@ -117,10 +112,16 @@ class ItemSlot(Slot):
     def __init__(self, id: str | None = None) -> None:
         super().__init__(id)
 
+    def is_valid(self, item: Item) -> bool:
+        # if not self.region.contains_point(self.app.mouse_position):
+        #     return False
+        if not self.empty:
+            return False
+        return True
+
 
 class EquipSlot(Slot):
-    category: ITEM_CATEGORIES_LITERAL
-    in_use: bool = False
+    empty: bool = True
 
     DEFAULT_CSS = """EquipSlot {
         width: 1fr;
@@ -133,5 +134,19 @@ class EquipSlot(Slot):
 
     }"""
 
-    def __init__(self, id: str | None = None) -> None:
+    def __init__(
+        self,
+        category: ITEM_CATEGORIES_LITERAL,
+        id: str | None = None,
+    ) -> None:
+        self.category = category
         super().__init__(id)
+
+    def is_valid(self, item: Item) -> bool:
+        # if not self.region.contains_point(self.app.mouse_position):
+        #     return False
+        if self.category != item.category:
+            return False
+        if not self.empty:
+            return False
+        return True

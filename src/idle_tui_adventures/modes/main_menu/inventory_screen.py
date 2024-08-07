@@ -62,13 +62,12 @@ class InventoryEquipScreen(ModalScreen):
             self.query_one(Inventory).query_one(
                 f"#slot_{key_pressed}", Slot
             ).place_item(ItemIcon(item=Item(**get_all_items()[0])))
-            self.notify(f"That key was pressed {key_pressed}")
         except Exception as e:
             self.log.error(e)
         return super()._on_key(event)
 
     @on(MouseDown)
-    def relocate_item(self, event: MouseDown):
+    def select_new_item_position(self, event: MouseDown):
         if event.button == 1:
             item_icon_to_move, _ = self.get_widget_at(*event.screen_offset)
             if isinstance(item_icon_to_move, ItemIcon):
@@ -76,5 +75,18 @@ class InventoryEquipScreen(ModalScreen):
                 self.app.push_screen(
                     ItemPopUpScreen(
                         clicked_item=item_icon_to_move.item, slot_list=slot_list
-                    )
+                    ),
+                    callback=self.relocate_item,
                 )
+
+    def relocate_item(self, movement_instructions: tuple | None):
+        if movement_instructions is not None:
+            initial_slot_widget: Slot = list(
+                self.get_widgets_at(*movement_instructions[0])
+            )[1][0]
+            target_slot_widget: Slot = self.get_widget_at(*movement_instructions[1])[0]
+            target_item = movement_instructions[2]
+
+            self.log.error(f"{initial_slot_widget}")
+            initial_slot_widget.remove_item()
+            target_slot_widget.place_item(item=ItemIcon(target_item))

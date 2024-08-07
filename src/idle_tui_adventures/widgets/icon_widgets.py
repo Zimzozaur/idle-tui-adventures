@@ -206,12 +206,6 @@ class ItemIcon(Static):
         border: outer black;
         }
 
-        & .relocating {
-        border: outer green;
-        }
-        & .not_valid {
-        border: outer red;
-        }
     }
     """
 
@@ -223,17 +217,16 @@ class ItemIcon(Static):
     def compose(self) -> Iterable[Widget]:
         self.update(renderable=get_icon(icon=self.item.category))
         self.styles.background = ITEM_RARITIES_COLOR_DICT[self.item.rarity]
-        self.tooltip = self.item.__repr__()
+        # self.tooltip = self.item.__repr__()
 
-        if self.relocating:
-            self.add_class("relocating")
+        # if self.relocating:
+        # self.tooltip = None
 
         return super().compose()
 
     @on(Click)
     def show_popup(self, event: Click):
         if event.button == 3:
-            self.add_class("relocating")
             # pop up options menu
             pass
 
