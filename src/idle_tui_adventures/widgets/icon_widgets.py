@@ -1,12 +1,10 @@
 from __future__ import annotations
-from typing import Coroutine, Any
 
 from typing_extensions import Self, Iterable
 from sqlite3 import Row
 
 from textual import on
-from textual.reactive import reactive
-from textual.events import Click, MouseDown, Resize
+from textual.events import Click, Resize
 from textual.binding import Binding
 from textual.message import Message
 from textual.widget import Widget
@@ -196,51 +194,6 @@ class CharacterPreview(Vertical):
         return super().compose()
 
 
-class ItemSlot(Static):
-    amount: reactive = reactive(0)
-
-    DEFAULT_CSS = """ItemSlot {
-        width: 1fr;
-        height: 1fr;
-        align: center middle;
-        content-align: center middle;
-        background: #ba9f68;
-        border:outer #6a4f32;
-        border-subtitle-background:#6a4f32;
-
-    }"""
-
-    def __init__(self, id: str | None = None) -> None:
-        super().__init__(id=id)
-
-    def compose(self) -> Iterable[Widget]:
-        self.styles.border_subtitle_color = "yellow"
-        self.border_subtitle = f"{self.amount} x" if self.amount else ""
-        yield Static(renderable=get_icon("Mage"))
-        return super().compose()
-
-    @property
-    def empty(self) -> bool:
-        return len(self.children) == 0
-
-    def place_item(self, item) -> None:
-        if self.empty:
-            self.mount(item)
-        else:
-            pass
-
-    def _on_mouse_down(self, event: MouseDown) -> Coroutine[Any, Any, None]:
-        if event.button == 3:
-            try:
-                self.query_one(Static).remove()
-            except Exception as e:
-                self.notify(e)
-        return super()._on_mouse_down(event)
-
-    # weiterer Static drauf
-    # bei mouse_down obere static in modal mit offset
-
-
 class ItemIcon(Static):
     DEFAULT_CSS = """
     ItemIcon {
@@ -248,23 +201,42 @@ class ItemIcon(Static):
         height: 1fr;
         align: center middle;
         content-align: center middle;
+
+        & :hover {
+        border: outer black;
+        }
+
+        & .relocating {
+        border: outer green;
+        }
+        & .not_valid {
+        border: outer red;
+        }
     }
     """
 
-    def __init__(self, item: Item) -> None:
+    def __init__(self, item: Item, relocating: bool = False) -> None:
         self.item = item
+        self.relocating = relocating
         super().__init__()
 
     def compose(self) -> Iterable[Widget]:
-        self.update(get_icon(icon=self.item.category))
+        self.update(renderable=get_icon(icon=self.item.category))
         self.styles.background = ITEM_RARITIES_COLOR_DICT[self.item.rarity]
         self.tooltip = self.item.__repr__()
+
+        if self.relocating:
+            self.add_class("relocating")
+
         return super().compose()
 
     @on(Click)
     def show_popup(self, event: Click):
-        if event.button == 1:
-            self.remove()
+        if event.button == 3:
+            self.add_class("relocating")
+            # pop up options menu
+            pass
+
         return super()._on_click(event=event)
 
     @on(Resize)
