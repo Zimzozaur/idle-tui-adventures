@@ -2,10 +2,10 @@ import sqlite3
 from pathlib import Path
 
 from idle_tui_adventures.database.db_utils import create_connection
-from idle_tui_adventures.constants import DB_FULLNAME
+from idle_tui_adventures.constants import DB_FULL_PATH
 
 
-def get_all_characters(database: Path = DB_FULLNAME) -> list[sqlite3.Row]:
+def get_all_characters(database: Path = DB_FULL_PATH) -> list[sqlite3.Row]:
     query_str = """
     SELECT *
     FROM characters
@@ -22,7 +22,7 @@ def get_all_characters(database: Path = DB_FULLNAME) -> list[sqlite3.Row]:
             return characters
 
 
-def get_all_items(database: Path = DB_FULLNAME) -> list[sqlite3.Row]:
+def get_all_items(database: Path = DB_FULL_PATH) -> list[sqlite3.Row]:
     query_str = """
     SELECT *
     FROM items

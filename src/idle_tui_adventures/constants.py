@@ -1,10 +1,23 @@
 from typing import Literal, get_args
 from pathlib import Path
+# from platformdirs import user_data_dir, user_config_dir
+
+# Config related
+
+# CONFIG_PATH = Path(
+#     user_config_dir(appname="idle-tui-adventures", appauthor=False, ensure_exists=True)
+# )
+CONFIG_NAME = "idle_tui_adventures.ini"
+CONFIG_PATH = Path(".").cwd() / "blala"
+CONFIG_FULL_PATH = CONFIG_PATH / CONFIG_NAME
 
 # DB related
 DB_NAME = "database.db"
 DB_PATH = Path(".").cwd()
-DB_FULLNAME = DB_PATH / DB_NAME
+# DB = Path(
+#     user_data_dir(appname="idle-tui-adventures", appauthor=False, ensure_exists=True)
+# )
+DB_FULL_PATH = DB_PATH / DB_NAME
 
 # Stats related
 STATS_LITERAL = Literal["strength", "intelligence", "dexterity", "luck"]

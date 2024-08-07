@@ -19,7 +19,7 @@ from idle_tui_adventures.constants import (
 )
 from idle_tui_adventures.classes.characters import Character
 from idle_tui_adventures.classes.items import Item
-from idle_tui_adventures.utils import get_icon
+from idle_tui_adventures.utils import get_icon, get_nice_tooltip
 
 
 class MenuIcon(Static):
@@ -217,10 +217,11 @@ class ItemIcon(Static):
     def compose(self) -> Iterable[Widget]:
         self.update(renderable=get_icon(icon=self.item.category))
         self.styles.background = ITEM_RARITIES_COLOR_DICT[self.item.rarity]
-        # self.tooltip = self.item.__repr__()
 
-        # if self.relocating:
-        # self.tooltip = None
+        self.tooltip = get_nice_tooltip(item=self.item)
+
+        if self.relocating:
+            self.tooltip = None
 
         return super().compose()
 
@@ -228,6 +229,9 @@ class ItemIcon(Static):
     def show_popup(self, event: Click):
         if event.button == 3:
             # pop up options menu
+            #   equip screen
+            #   - equip/ unequip
+            #   - compare stats?
             pass
 
         return super()._on_click(event=event)

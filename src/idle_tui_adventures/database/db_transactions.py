@@ -5,7 +5,7 @@ from pathlib import Path
 from idle_tui_adventures.database.db_utils import create_connection
 from idle_tui_adventures.constants import (
     PROFESSIONS_LITERAL,
-    DB_FULLNAME,
+    DB_FULL_PATH,
     RARITIES_LITERAL,
     ITEM_CATEGORIES_LITERAL,
 )
@@ -18,7 +18,7 @@ def create_new_character(
     intelligence: int,
     dexterity: int,
     luck: int,
-    database: Path = DB_FULLNAME,
+    database: Path = DB_FULL_PATH,
 ) -> str | int:
     data_character_dict = {
         "name": name,
@@ -77,7 +77,7 @@ def create_new_item(
     intelligence: int,
     dexterity: int,
     luck: int,
-    database: Path = DB_FULLNAME,
+    database: Path = DB_FULL_PATH,
 ) -> str | int:
     data_item_dict = {
         "name": name,

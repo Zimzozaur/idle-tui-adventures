@@ -5,7 +5,6 @@ build/
 dist/
 wheels/
 *.egg-info
-
 *.coverage
 
 # venv
@@ -13,6 +12,7 @@ wheels/
 
 # Developer stuff
 *.db
+*.ini
 
 # Images
 Pack_of_Medieval_Tools/

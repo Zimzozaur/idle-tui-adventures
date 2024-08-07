@@ -1,7 +1,13 @@
 from pathlib import Path
-from rich_pixels import Pixels
 import random
 from collections import Counter
+
+from rich_pixels import Pixels
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from idle_tui_adventures.widgets.inventory_screen_widgets import Item
 
 from idle_tui_adventures.constants import (
     ICONS_LITERAL,
@@ -27,3 +33,7 @@ def get_random_amount_start_stats(profession: PROFESSIONS_LITERAL):
             k=amount_stats,
         )
     )
+
+
+def get_nice_tooltip(item: "Item") -> str | None:
+    return item.__repr__()

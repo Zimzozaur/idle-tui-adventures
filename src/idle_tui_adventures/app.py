@@ -1,7 +1,7 @@
 from textual.reactive import reactive
 from textual.app import App
 
-from idle_tui_adventures.constants import PROFESSIONS_LITERAL
+from idle_tui_adventures.classes.characters import Character
 from idle_tui_adventures.modes.start_menu.start_screen import StartScreen
 from idle_tui_adventures.modes.main_menu.main_screen import MainScreen
 from idle_tui_adventures.modes.main_menu.inventory_screen import InventoryEquipScreen
@@ -13,7 +13,8 @@ from idle_tui_adventures.modes.settings_menu.settings_screen import SettingsScre
 
 class IdleAdventure(App[None]):
     level: int = reactive(1)
-    profession: PROFESSIONS_LITERAL = "Warrior"
+    active_character: Character
+    config: dict
 
     BINDINGS = [
         ("1", "switch_mode('Start')"),

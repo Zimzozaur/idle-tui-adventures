@@ -2,15 +2,15 @@ import sqlite3
 from pathlib import Path
 
 from idle_tui_adventures.constants import (
-    DB_FULLNAME,
+    DB_FULL_PATH,
 )
 
 
-def create_connection(database: Path = DB_FULLNAME) -> sqlite3.Connection:
+def create_connection(database: Path = DB_FULL_PATH) -> sqlite3.Connection:
     return sqlite3.connect(database=database, autocommit=False)
 
 
-def init_new_db(database: Path = DB_FULLNAME):
+def init_new_db(database: Path = DB_FULL_PATH):
     if database.exists():
         return
 
@@ -81,7 +81,7 @@ def init_new_db(database: Path = DB_FULLNAME):
             return 1
 
 
-def store_item(character_name, item):
+def store_item(character_name: str, item: str):
     with create_connection() as con:
         try:
             character_id = con.execute(
