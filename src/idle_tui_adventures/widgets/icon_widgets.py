@@ -22,7 +22,29 @@ from idle_tui_adventures.classes.items import Item
 from idle_tui_adventures.utils import get_icon, get_nice_tooltip
 
 
-class MenuIcon(Static):
+class ImageStatic(Static):
+    DEFAULT_CSS = """MenuIcon {
+        width: 1fr;
+        height: 1fr;
+        align: center middle;
+        content-align: center middle;
+
+    }"""
+
+    def __init__(self, icon_name: ICONS_LITERAL, id: str | None = None) -> None:
+        self.icon_name = icon_name
+        self.icon = get_icon(icon=self.icon_name, width=30, heigth=int(1.8 * 25))
+        super().__init__(self.icon, id=id)
+
+    @on(Resize)
+    def keep_image_size(self, event: Resize) -> None:
+        new_width, new_height = event.size
+        self.update(
+            get_icon(icon=self.icon_name, width=new_width, heigth=int(1.8 * new_height))
+        )
+
+
+class MenuIcon(ImageStatic):
     BINDINGS = [Binding("enter", "press", "Press Icon", show=False)]
 
     DEFAULT_CSS = """MenuIcon {
@@ -36,23 +58,18 @@ class MenuIcon(Static):
     class Pressed(Message):
         def __init__(self, icon: MenuIcon) -> None:
             self.icon: MenuIcon = icon
-            """The icon that was pressed."""
             super().__init__()
 
         @property
         def control(self) -> MenuIcon:
             return self.icon
 
-    def __init__(self, icon: ICONS_LITERAL, id: str) -> None:
+    def __init__(self, icon: ICONS_LITERAL, id: str | None = None) -> None:
         self.icon_name = icon
-        self.icon_img = get_icon(icon=self.icon_name)
 
-        super().__init__(self.icon_img, id=id)
+        super().__init__(icon_name=self.icon_name, id=id)
 
     def press(self) -> Self:
-        # Manage the "active" effect:
-        # self._start_active_affect()
-        # ...and let other components know that we've just been clicked:
         self.log.debug(f"{self.id} was pressed")
         self.post_message(MenuIcon.Pressed(self))
         return self
@@ -60,13 +77,6 @@ class MenuIcon(Static):
     def _on_click(self, event):
         self.press()
         return super()._on_click(event=event)
-
-    @on(Resize)
-    def keep_image_size(self, event: Resize) -> None:
-        new_width, new_height = event.size
-        self.update(
-            get_icon(icon=self.icon_name, width=new_width, heigth=int(1.8 * new_height))
-        )
 
 
 class MenuIconsRow(Horizontal):

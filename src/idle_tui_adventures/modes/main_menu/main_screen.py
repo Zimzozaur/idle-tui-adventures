@@ -8,6 +8,7 @@ from textual.screen import Screen
 
 from idle_tui_adventures.widgets.main_screen_widgets import (
     CharacterProgressbar,
+    MonsterPanel,
 )
 from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow
 from idle_tui_adventures.utils import calculate_exp_needed
@@ -27,8 +28,11 @@ class MainScreen(Screen):
     """
 
     def compose(self) -> Iterable[Widget]:
-        for i in range(9):
-            yield Placeholder("MainScreen", id=f"tile_{i}")
+        yield Placeholder("MainScreen", id="tile_0")
+        yield MonsterPanel()
+        yield Placeholder("MainScreen", id="tile_1")
+        yield Placeholder("MainScreen", id="tile_2")
+
         yield CharacterProgressbar()
         yield MenuIconsRow()
 

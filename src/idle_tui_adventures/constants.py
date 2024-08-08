@@ -4,6 +4,7 @@ from pathlib import Path
 
 # Config related
 
+# Oder ueber die Config dann variabel halten
 # CONFIG_PATH = Path(
 #     user_config_dir(appname="idle-tui-adventures", appauthor=False, ensure_exists=True)
 # )
@@ -59,11 +60,6 @@ ITEM_CATEGORIES = get_args(ITEM_CATEGORIES_LITERAL)
 # Icons-menu
 MENU_ICONS_LITERAL = Literal["character", "backpack", "dungeon", "shop", "settings"]
 MENU_ICONS = get_args(MENU_ICONS_LITERAL)
-
-# Icons-professions
-PROFESSIONS_LITERAL = Literal["Warrior", "Mage", "Ranger", "Thief"]
-PROFESSIONS = get_args(PROFESSIONS_LITERAL)
-ICONS_LITERAL = MENU_ICONS_LITERAL | PROFESSIONS_LITERAL | ITEM_CATEGORIES_LITERAL
 ICON_SCREEN_DICT = {
     "character": "CharacterScreen",
     "backpack": "InventoryEquipScreen",
@@ -71,6 +67,20 @@ ICON_SCREEN_DICT = {
     "shop": "ShopScreen",
     "settings": "SettingsScreen",
 }
+
+# Icons-professions
+PROFESSIONS_LITERAL = Literal["Warrior", "Mage", "Ranger", "Thief"]
+PROFESSIONS = get_args(PROFESSIONS_LITERAL)
+
+# Icons-Monster
+MONSTERS_LITERAL = Literal["bear", "dragon", "dragon2"]
+
+ICONS_LITERAL = (
+    MENU_ICONS_LITERAL
+    | PROFESSIONS_LITERAL
+    | ITEM_CATEGORIES_LITERAL
+    | MONSTERS_LITERAL
+)
 
 # Inventory (Row,Cols)
 INVENTORY_SIZE = (4, 4)

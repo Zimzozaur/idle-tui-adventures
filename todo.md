@@ -59,5 +59,6 @@
 
 - Settings Screen
     - Statistics?
+    - DB Location
     - Skip Start Screen -> Main Screen with active Character
     - show damage
