@@ -118,25 +118,7 @@ class MonsterPanel(Vertical):
 
     def _on_click(self, event: Click) -> Coroutine[Any, Any, None]:
         damage = 125
-        dmg_label = Label(f"{damage}")
-        dmg_label.styles.layer = "above"
-        dmg_label.styles.color = "red"
-        dmg_label.styles.text_align = "center"
-        dmg_label.styles.width = "auto"
-
-        dmg_label.styles.offset = self.app.mouse_position - (self.region.offset[0], 0)
-        dmg_label.styles.background = "black 20%"
-        dmg_label.styles.animate(
-            attribute="opacity", value=0, duration=2, on_complete=dmg_label.remove
-        )
-
-        dmg_label.animate(
-            attribute="offset",
-            value=Offset(self.app.mouse_position[0] - self.region.offset[0], 0),
-            duration=1.5,
-            easing="out_expo",
-        )
-        self.query_one(ImageStatic).mount(dmg_label)
+        self.query_one(ImageStatic).mount(DamageLabel(damage=damage))
         self.pb.progress -= damage
         if self.pb.progress == 0:
             self.monster_label.update("Dead Bear")
@@ -144,3 +126,40 @@ class MonsterPanel(Vertical):
 
 
 class Healthbar(ProgressBar): ...
+
+
+class DamageLabel(Label):
+    DEFAULT_CSS = """
+    DamageLabel {
+        layer:above;
+        color:red;
+        text_align:center;
+        width:auto;
+        background:black 20%;
+
+        & .-crit {
+            color: blue;
+        }
+    }
+    """
+
+    def __init__(self, damage: int, crit: bool = False) -> None:
+        self.damage = damage
+        if crit:
+            self.add_class("-crit")
+        super().__init__(renderable=f"{damage}")
+
+        self.offset = self.app.mouse_position  # - (self.region.offset[0], 0)
+        self.fly_away()
+
+    def fly_away(self):
+        self.styles.animate(
+            attribute="opacity", value=0, duration=2.0, on_complete=self.remove
+        )
+
+        self.animate(
+            attribute="offset",
+            value=Offset(self.app.mouse_position[0], 0),  # - self.region.offset[0], 0),
+            duration=1.5,
+            easing="out_expo",
+        )
