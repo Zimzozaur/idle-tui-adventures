@@ -37,3 +37,8 @@ def get_random_amount_start_stats(profession: PROFESSIONS_LITERAL):
 
 def get_nice_tooltip(item: "Item") -> str | None:
     return item.__repr__()
+
+
+# exp -> level : (sqrt(100(2experience+25))+50)/100
+def calculate_exp_needed(next_lvl: int) -> int:
+    return (next_lvl - 1) * next_lvl * 50

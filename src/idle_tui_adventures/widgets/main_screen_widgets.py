@@ -1,7 +1,11 @@
 from __future__ import annotations
+from typing import Coroutine, Any
 
 
+from textual.events import Compose
 from textual.widgets import ProgressBar
+
+from idle_tui_adventures.utils import calculate_exp_needed
 
 
 class CharacterProgressbar(ProgressBar):
@@ -16,7 +20,6 @@ class CharacterProgressbar(ProgressBar):
         offset: 0 300%;
 
         & Bar  {
-            padding:0 0 0 0;
             width: 1fr;
             }
 
@@ -34,23 +37,37 @@ class CharacterProgressbar(ProgressBar):
 
     def __init__(
         self,
-        total: float | None = 5,
         show_percentage: bool = True,
         show_eta: bool = False,
     ):
-        super().__init__(total, show_percentage=show_percentage, show_eta=show_eta)
+        super().__init__(show_percentage=show_percentage, show_eta=show_eta)
+
+    def _on_compose(self, event: Compose) -> Coroutine[Any, Any, None]:
+        self.timer = self.set_interval(1 / 10, self.make_progress, pause=True)
+        return super()._on_compose(event)
 
     def on_mount(self) -> None:
-        self.timer = self.set_interval(1 / 5, self.make_progress, pause=True)
+        if self.app.character:
+            new_total = calculate_exp_needed(next_lvl=self.app.character.level + 1)
+            current_exp = self.app.character.experience
+
+            self.update(progress=0, total=new_total - current_exp)
+            self.timer.resume()
         return super().on_mount()
 
     def make_progress(self):
         self.update(advance=1)
+        self.app.character.collect_exp()
         if self.percentage == 1:
-            self.app.level += 1
-            self.notify(
-                title="Level Up",
-                message=f"reached level [blue]{self.app.level}[/]",
-                timeout=1,
-            )
-            self.update(progress=0, total=self.app.level * 5)
+            self.advance_level()
+
+    def advance_level(self):
+        self.app.character.level_up()
+        self.notify(
+            title="Level Up",
+            message=f"{self.app.character.name} reached level [blue]{self.app.character.level}[/]",
+            timeout=1,
+        )
+        new_total = calculate_exp_needed(next_lvl=self.app.character.level + 1)
+        current_exp = self.app.character.experience
+        self.update(progress=0, total=new_total - current_exp)

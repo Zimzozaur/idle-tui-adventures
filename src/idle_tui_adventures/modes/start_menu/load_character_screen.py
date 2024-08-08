@@ -51,13 +51,22 @@ class CharacterSelection(ModalScreen):
         return super().compose()
 
     def _on_mount(self, event: Mount) -> None:
-        self.query_one(f"#character_id_{self.app.cfg.active_character_id}").add_class(
-            "-active"
-        )
+        try:
+            self.query_one(
+                f"#character_id_{self.app.cfg.active_character_id}"
+            ).add_class("-active")
+        except Exception:
+            self.notify(
+                title="No active character selected",
+                message="Please select a character or create one",
+                severity="error",
+            )
         return super()._on_mount(event)
 
     @on(Button.Pressed, "#btn_start_adventure")
     def move_to_main_screen(self):
+        self.app.uninstall_screen("MainScreen")
+        self.dismiss()
         self.app.switch_mode("Main")
 
     @on(Button.Pressed, "#btn_go_back")

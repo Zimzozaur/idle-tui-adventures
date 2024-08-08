@@ -1,5 +1,7 @@
 from typing import Iterable
 
+from textual import on
+from textual.events import ScreenResume, ScreenSuspend
 from textual.widget import Widget
 from textual.widgets import Placeholder
 from textual.screen import Screen
@@ -8,6 +10,7 @@ from idle_tui_adventures.widgets.main_screen_widgets import (
     CharacterProgressbar,
 )
 from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow
+from idle_tui_adventures.utils import calculate_exp_needed
 
 
 class MainScreen(Screen):
@@ -30,3 +33,18 @@ class MainScreen(Screen):
         yield MenuIconsRow()
 
         return super().compose()
+
+    @on(ScreenSuspend)
+    def pause_progress(self):
+        p_bar = self.query_one(CharacterProgressbar)
+        p_bar.timer.pause
+
+    @on(ScreenResume)
+    def recalibrate_progressbar(self):
+        if self.app.character:
+            new_total = calculate_exp_needed(next_lvl=self.app.character.level + 1)
+            current_exp = self.app.character.experience
+
+            p_bar = self.query_one(CharacterProgressbar)
+            p_bar.update(progress=0, total=new_total - current_exp)
+            p_bar.timer.resume()

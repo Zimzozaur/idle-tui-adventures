@@ -8,7 +8,7 @@ from pathlib import Path
 #     user_config_dir(appname="idle-tui-adventures", appauthor=False, ensure_exists=True)
 # )
 CONFIG_NAME = "idle_tui_adventures.ini"
-CONFIG_PATH = Path(".").cwd() / "blala"
+CONFIG_PATH = Path(".").cwd()
 CONFIG_FULL_PATH = CONFIG_PATH / CONFIG_NAME
 
 # DB related

@@ -190,7 +190,7 @@ class CharacterPreview(Vertical):
         super().__init__(id=f"character_id_{self.character.character_id}")
 
     def compose(self) -> Iterable[Widget]:
-        self.border_title = "active character"
+        self.border_title = "Currently active character"
 
         yield MenuIcon(
             icon=self.character.profession,
