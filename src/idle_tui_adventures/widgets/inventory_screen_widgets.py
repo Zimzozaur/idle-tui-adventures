@@ -56,6 +56,7 @@ class Equipment(Grid):
     )
 
     # On Mount?
+    # Change Layout
     # query items
     # place items
     def compose(self) -> Iterable[Widget]:

@@ -25,16 +25,47 @@ class IdleTuiConfig:
         )
         self.save()
 
+    @property
+    def skip_screen(self) -> bool:
+        return self.config.getboolean(
+            section="game.settings", option="skip_start_screen"
+        )
+
+    @skip_screen.setter
+    def skip_screen(self, new_value: bool):
+        self.config.set(
+            section="game.settings", option="skip_start_screen", value=f"{new_value}"
+        )
+        self.save()
+
+    @property
+    def show_damage(self) -> bool:
+        return self.config.getboolean(section="game.settings", option="show_damage")
+
+    @show_damage.setter
+    def show_damage(self, new_value: bool):
+        self.config.set(
+            section="game.settings", option="show_damage", value=f"{new_value}"
+        )
+        self.save()
+
     def save(self):
         with open(self.config_path, "w") as configfile:
             self.config.write(configfile)
 
 
-def create_init_config(conf_path=CONFIG_FULL_PATH):
+def init_new_config(conf_path=CONFIG_FULL_PATH):
+    if conf_path.exists():
+        return
+
+    conf_path.parent.mkdir(parents=True, exist_ok=True)
+    conf_path.touch()
+
     config = ConfigParser(default_section=None, allow_no_value=True)
     config.optionxform = str
     config["database"] = {"database_path": DB_FULL_PATH}
     config["character.active"] = {"character_id": 0}
+    config["game.settings"] = {"skip_start_screen": False, "show_damage": True}
 
     with open(conf_path, "w") as conf_file:
         config.write(conf_file)

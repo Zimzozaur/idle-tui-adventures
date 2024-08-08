@@ -15,6 +15,14 @@ class StartScreen(Screen):
     name: str = "StartScreen"
     DEFAULT_CSS = """StartScreen {
         align: center middle;
+
+        Button {
+            width: 33%;
+        }
+        Checkbox {
+            width: 33%;
+        }
+
     }
 
     """
@@ -22,18 +30,26 @@ class StartScreen(Screen):
     def compose(self) -> Iterable[Widget]:
         yield Button("New Character", id="btn_move_to_character_creation")
         yield Button("Load Character", id="btn_move_to_load_character")
-        yield Checkbox(label="Skip this Screen and Start with latest Character")
+        yield Checkbox(
+            value=self.app.cfg.skip_screen,
+            label="Start on Main Screen",
+            tooltip="If checked and there is an active character, the App starts on the Main Screen",
+        )
 
         return super().compose()
 
     @on(Button.Pressed, "#btn_move_to_character_creation")
-    def open_character_creation_screen(self, _message: Button.Pressed) -> None:
+    def open_character_creation_screen(self) -> None:
         # message needs a control attribute
         self.log.debug('Pressed "New Character" Button')
         self.app.push_screen(CharacterCreation())
 
     @on(Button.Pressed, "#btn_move_to_load_character")
-    def open_load_character_screen(self, _message: Button.Pressed) -> None:
+    def open_load_character_screen(self) -> None:
         # message needs a control attribute
         self.log.debug('Pressed "Load Character" Button')
         self.app.push_screen(CharacterSelection())
+
+    @on(Checkbox.Changed)
+    def change_skip_screen_behaviour(self, event: Checkbox.Changed):
+        self.app.cfg.skip_screen = event.value
