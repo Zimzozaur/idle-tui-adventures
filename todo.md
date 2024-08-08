@@ -9,8 +9,6 @@
         - Inventory
             - query function
         - Progress Infos
-            - Level
-            - Exp
             - Stage
         - Stats
             - Base Str, Int, Dex, Luc
@@ -40,9 +38,6 @@
         - Background
     - load character screen
         - horizontal scroll character view
-            - character window
-                - yellow border if hover
-                - green border for active character
             - Options popup
                 - Set as active / Select
                 - Rename
@@ -65,8 +60,4 @@
 - Settings Screen
     - Statistics?
     - Skip Start Screen -> Main Screen with active Character
-
-- config needed or put into database?
-    - active character
-    - skip start screen
-    - show damage?
+    - show damage

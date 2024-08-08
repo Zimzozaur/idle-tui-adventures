@@ -65,7 +65,6 @@ class CharacterSelection(ModalScreen):
 
     @on(Button.Pressed, "#btn_start_adventure")
     def move_to_main_screen(self):
-        self.app.uninstall_screen("MainScreen")
         self.dismiss()
         self.app.switch_mode("Main")
 
@@ -74,7 +73,8 @@ class CharacterSelection(ModalScreen):
         self.dismiss()
 
     @on(CharacterPreview.SelectOther)
-    def hightlight_preview(self, event: CharacterPreview.SelectOther) -> None:
+    def only_highlight_clicked(self, event: CharacterPreview.SelectOther) -> None:
+        # remove active class from other Widgets
         self.query(CharacterPreview).exclude(
             f"#{event.character_preview.id}"
         ).remove_class("-active")
