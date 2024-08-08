@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Coroutine, Any, Iterable
-from random import randint
+from random import randint, random
 
 
 from textual.geometry import Offset
@@ -121,21 +121,21 @@ class MonsterPanel(Vertical):
         self.timer = self.set_interval(
             interval=1 / self.app.character.attack_speed,
             callback=self.deal_damage,
-            repeat=10,
         )
 
         return super()._on_compose(event)
 
     def deal_damage(self):
-        damage = 125
-        self.query_one(ImageStatic).mount(
-            DamageLabel(damage=damage, parent_size=self.size)
-        )
+        damage = 25
+        try:
+            self.mount(DamageLabel(damage=damage, parent_size=self.size))
+        except Exception:
+            pass
         self.pb.progress -= damage
         if self.pb.progress <= 0:
             self.monster_label.update("Dead Bear")
             self.timer.reset()
-            self.refresh(recompose=True)
+            self.refresh(recompose=True, repaint=False)
 
 
 class Healthbar(ProgressBar): ...
@@ -148,26 +148,25 @@ class DamageLabel(Label):
         color:red;
         text_align:center;
         width:auto;
-        background:black 20%;
+        background:black;
 
-        & .-crit {
-            color: blue;
-        }
     }
     """
 
-    def __init__(self, damage: int, parent_size: Offset, crit: bool = False) -> None:
+    def __init__(self, damage: int, parent_size: Offset) -> None:
         self.damage = damage
         self.wiggle = randint(-10, 10)
 
         self.parent_center = Offset(
             parent_size[0] // 2 + self.wiggle, parent_size[1] // 2
         )
-        if crit:
-            self.add_class("-crit")
+
         super().__init__(renderable=f"{damage}")
 
-        # self.offset = self.app.mouse_position   - (self.parent_offset[0], 0)
+        if random() <= self.app.character.crit_rate:
+            self.styles.border = "outer", "red"
+            self.update(f"CRIT {self.damage}")
+
         self.offset = self.parent_center
         self.fly_away()
 

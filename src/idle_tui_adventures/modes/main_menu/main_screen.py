@@ -28,10 +28,10 @@ class MainScreen(Screen):
     """
 
     def compose(self) -> Iterable[Widget]:
-        yield Placeholder("MainScreen", id="tile_0")
+        yield Placeholder("Character", id="tile_0")
         yield MonsterPanel()
-        yield Placeholder("MainScreen", id="tile_1")
-        yield Placeholder("MainScreen", id="tile_2")
+        yield Placeholder("Stage", id="tile_1")
+        yield Placeholder("Log", id="tile_2")
 
         yield CharacterProgressbar()
         yield MenuIconsRow()
@@ -42,6 +42,8 @@ class MainScreen(Screen):
     def pause_progress(self):
         p_bar = self.query_one(CharacterProgressbar)
         p_bar.timer.pause()
+        monster = self.query_one(MonsterPanel)
+        monster.timer.pause()
 
     @on(ScreenResume)
     def recalibrate_progressbar(self):
@@ -53,3 +55,5 @@ class MainScreen(Screen):
             p_bar = self.query_one(CharacterProgressbar)
             p_bar.update(progress=current_exp, total=new_total - last_total)
             p_bar.timer.resume()
+            monster = self.query_one(MonsterPanel)
+            monster.timer.resume()

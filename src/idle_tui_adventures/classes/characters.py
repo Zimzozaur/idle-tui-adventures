@@ -26,7 +26,9 @@ class Character:
     def __post_init__(self) -> None:
         self.equipped_items = self.get_equipped_items()
         self.inventory_items = self.get_inventory_items()
-        self.attack_speed = 1.05
+        # Calculate Stats
+        self.attack_speed = 1.00
+        self.crit_rate = 0.20
 
     def level_up(self):
         self.level += 1
