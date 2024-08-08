@@ -1,6 +1,8 @@
 from typing import Iterable
 from sqlite3 import Row
 
+from textual import on
+from textual.events import Mount
 from textual.screen import ModalScreen
 from textual.widget import Widget
 from textual.containers import HorizontalScroll
@@ -16,6 +18,12 @@ class CharacterSelection(ModalScreen):
     DEFAULT_CSS = """
     CharacterSelection {
         align:center middle;
+
+        CharacterPreview {
+            & :hover {
+                border: outer yellow;
+            }
+        }
 
         Button {
             align:center middle;
@@ -38,6 +46,22 @@ class CharacterSelection(ModalScreen):
         with HorizontalScroll():
             for char_data in self.characters:
                 yield CharacterPreview(character_data=char_data)
-        yield Button("Start Adventure")
-        yield Button("Back to Start Screen")
+        yield Button("Start Adventure", id="btn_start_adventure")
+        yield Button("Back to Start Screen", id="btn_go_back")
         return super().compose()
+
+    def _on_mount(self, event: Mount) -> None:
+        self.query_one(f"#character_id_{self.app.cfg.active_character_id}").add_class(
+            "-active"
+        )
+        return super()._on_mount(event)
+
+    @on(Button.Pressed, "#btn_start_adventure")
+    def move_to_main_screen(self):
+        self.app.switch_mode("Main")
+
+    @on(CharacterPreview.SelectOther)
+    def hightlight_preview(self, event: CharacterPreview.SelectOther) -> None:
+        self.query(CharacterPreview).exclude(
+            f"#{event.character_preview.id}"
+        ).remove_class("-active")

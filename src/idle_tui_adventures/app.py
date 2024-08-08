@@ -31,29 +31,29 @@ class IdleAdventure(App[None]):
     MODES = {"Start": StartScreen, "Main": MainScreen, "Settings": SettingsScreen}
 
     def on_mount(self):
-        # self.switch_mode(mode="Start")
         init_new_config()
         self.cfg = IdleTuiConfig()
 
-        self.character = self.get_active_character()
+        self.set_active_character()
 
-        # If character is Present go to main
+        # If character is present go to main
         if self.character and self.cfg.skip_screen:
             self.switch_mode(mode="Main")
         else:
             self.switch_mode(mode="Start")
 
-    def get_active_character(self):
+    def set_active_character(self):
         db_entry = get_character_by_id(character_id=self.cfg.active_character_id)
         if db_entry:
             info_txt = f'Name:\t\t[blue]{db_entry['name']}[/]\n'
             info_txt += f'Level:\t\t[blue]{db_entry['level']}[/]\n'
             info_txt += f'Profession:\t[blue]{db_entry['profession']}[/]'
-            self.notify(title="Character Found", message=info_txt)
-            return Character(**db_entry)
-        self.notify(
-            title="No Character Found",
-            message="Please create a character first",
-            severity="warning",
-        )
-        return None
+            self.notify(title="Character Active", message=info_txt, timeout=2)
+            self.character = Character(**db_entry)
+        else:
+            self.notify(
+                title="No Character Found",
+                message="Please create a character first",
+                severity="warning",
+            )
+            self.character = None

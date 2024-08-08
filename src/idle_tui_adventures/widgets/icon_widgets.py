@@ -160,28 +160,38 @@ class CharacterPreview(Vertical):
     CharacterPreview {
         width:1fr;
         height:1fr;
+        align:center middle;
 
+        &.-active {
+            border: outer green;
+        }
 
         Label {
             height:10%;
             width:1fr;
             content-align:center middle;
+            margin: 0 0;
+            background:black;
             text-align: center;
             border:solid brown;
         }
         MenuIcon {
             height:50%;
             width:1fr;
+            align:center middle;
         }
     }
     """
 
     def __init__(self, character_data: Row):
         self.character: Character = Character(**dict(character_data))
+        self.can_focus = True
 
-        super().__init__()
+        super().__init__(id=f"character_id_{self.character.character_id}")
 
     def compose(self) -> Iterable[Widget]:
+        self.border_title = "active character"
+
         yield MenuIcon(
             icon=self.character.profession,
             id=f"character_{self.character.character_id}",
@@ -192,6 +202,23 @@ class CharacterPreview(Vertical):
         yield Label(f"Experience: {self.character.experience}")
         yield Label(f"Stage: {self.character.major_stage}-{self.character.minor_stage}")
         return super().compose()
+
+    def _on_click(self, event: Click) -> None:
+        self.add_class("-active")
+        self.app.cfg.active_character_id = self.id.split("_")[-1]
+        self.app.set_active_character()
+        self.post_message(self.SelectOther(self))
+
+        return super()._on_click(event)
+
+    class SelectOther(Message):
+        def __init__(self, character_preview: CharacterPreview):
+            self.character_preview = character_preview
+            super().__init__()
+
+        @property
+        def control(self) -> CharacterPreview:
+            return self.character_preview
 
 
 class ItemIcon(Static):
