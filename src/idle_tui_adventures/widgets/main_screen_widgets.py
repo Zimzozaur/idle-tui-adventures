@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import Coroutine, Any, Iterable
+from random import randint
 
 
 from textual.geometry import Offset
-from textual.events import Click, Compose
+from textual.events import Compose
 from textual.widget import Widget
 from textual.widgets import ProgressBar, Label
 from textual.containers import Vertical
@@ -116,13 +117,25 @@ class MonsterPanel(Vertical):
 
         return super().compose()
 
-    def _on_click(self, event: Click) -> Coroutine[Any, Any, None]:
+    def _on_compose(self, event: Compose) -> Coroutine[Any, Any, None]:
+        self.timer = self.set_interval(
+            interval=1 / self.app.character.attack_speed,
+            callback=self.deal_damage,
+            repeat=10,
+        )
+
+        return super()._on_compose(event)
+
+    def deal_damage(self):
         damage = 125
-        self.query_one(ImageStatic).mount(DamageLabel(damage=damage))
+        self.query_one(ImageStatic).mount(
+            DamageLabel(damage=damage, parent_size=self.size)
+        )
         self.pb.progress -= damage
-        if self.pb.progress == 0:
+        if self.pb.progress <= 0:
             self.monster_label.update("Dead Bear")
-        return super()._on_click(event)
+            self.timer.reset()
+            self.refresh(recompose=True)
 
 
 class Healthbar(ProgressBar): ...
@@ -143,23 +156,32 @@ class DamageLabel(Label):
     }
     """
 
-    def __init__(self, damage: int, crit: bool = False) -> None:
+    def __init__(self, damage: int, parent_size: Offset, crit: bool = False) -> None:
         self.damage = damage
+        self.wiggle = randint(-10, 10)
+
+        self.parent_center = Offset(
+            parent_size[0] // 2 + self.wiggle, parent_size[1] // 2
+        )
         if crit:
             self.add_class("-crit")
         super().__init__(renderable=f"{damage}")
 
-        self.offset = self.app.mouse_position  # - (self.region.offset[0], 0)
+        # self.offset = self.app.mouse_position   - (self.parent_offset[0], 0)
+        self.offset = self.parent_center
         self.fly_away()
 
     def fly_away(self):
         self.styles.animate(
-            attribute="opacity", value=0, duration=2.0, on_complete=self.remove
+            attribute="opacity",
+            value=0,
+            duration=1.5,
         )
 
         self.animate(
             attribute="offset",
-            value=Offset(self.app.mouse_position[0], 0),  # - self.region.offset[0], 0),
-            duration=1.5,
+            value=Offset(self.parent_center[0] + self.wiggle, 0),
+            duration=1.0,
+            on_complete=self.remove,
             easing="out_expo",
         )
