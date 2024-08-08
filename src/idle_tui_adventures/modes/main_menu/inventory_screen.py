@@ -90,6 +90,5 @@ class InventoryEquipScreen(ModalScreen):
             target_slot_widget: Slot = self.get_widget_at(*movement_instructions[1])[0]
             target_item = movement_instructions[2]
 
-            self.log.error(f"{initial_slot_widget}")
             initial_slot_widget.remove_item()
             target_slot_widget.place_item(item=ItemIcon(target_item))

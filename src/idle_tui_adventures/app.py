@@ -1,4 +1,3 @@
-from textual.reactive import reactive
 from textual.app import App
 
 from idle_tui_adventures.classes.characters import Character
@@ -14,7 +13,6 @@ from idle_tui_adventures.modes.settings_menu.settings_screen import SettingsScre
 
 
 class IdleAdventure(App[None]):
-    level: int = reactive(1)
     character: Character | None
 
     BINDINGS = [

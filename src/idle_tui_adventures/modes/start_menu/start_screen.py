@@ -40,16 +40,15 @@ class StartScreen(Screen):
 
     @on(Button.Pressed, "#btn_move_to_character_creation")
     def open_character_creation_screen(self) -> None:
-        # message needs a control attribute
         self.log.debug('Pressed "New Character" Button')
         self.app.push_screen(CharacterCreation())
 
     @on(Button.Pressed, "#btn_move_to_load_character")
     def open_load_character_screen(self) -> None:
-        # message needs a control attribute
         self.log.debug('Pressed "Load Character" Button')
         self.app.push_screen(CharacterSelection())
 
     @on(Checkbox.Changed)
     def change_skip_screen_behaviour(self, event: Checkbox.Changed):
+        self.log.debug("Changed Skip Screen Behaviour")
         self.app.cfg.skip_screen = event.value

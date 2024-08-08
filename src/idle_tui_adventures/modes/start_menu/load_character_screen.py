@@ -1,5 +1,5 @@
-from typing import Iterable
 from sqlite3 import Row
+from typing import Iterable
 
 from textual import on
 from textual.events import Mount
@@ -59,6 +59,10 @@ class CharacterSelection(ModalScreen):
     @on(Button.Pressed, "#btn_start_adventure")
     def move_to_main_screen(self):
         self.app.switch_mode("Main")
+
+    @on(Button.Pressed, "#btn_go_back")
+    def move_to_start_screen(self):
+        self.dismiss()
 
     @on(CharacterPreview.SelectOther)
     def hightlight_preview(self, event: CharacterPreview.SelectOther) -> None:
