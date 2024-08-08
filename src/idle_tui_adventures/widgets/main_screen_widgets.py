@@ -49,9 +49,10 @@ class CharacterProgressbar(ProgressBar):
     def on_mount(self) -> None:
         if self.app.character:
             new_total = calculate_exp_needed(next_lvl=self.app.character.level + 1)
-            current_exp = self.app.character.experience
+            last_total = calculate_exp_needed(next_lvl=self.app.character.level)
+            current_exp = self.app.character.experience - last_total
 
-            self.update(progress=0, total=new_total - current_exp)
+            self.update(progress=current_exp, total=new_total - last_total)
             self.timer.resume()
         return super().on_mount()
 
@@ -69,5 +70,5 @@ class CharacterProgressbar(ProgressBar):
             timeout=1,
         )
         new_total = calculate_exp_needed(next_lvl=self.app.character.level + 1)
-        current_exp = self.app.character.experience
-        self.update(progress=0, total=new_total - current_exp)
+        last_total = calculate_exp_needed(next_lvl=self.app.character.level)
+        self.update(progress=0, total=new_total - last_total)
