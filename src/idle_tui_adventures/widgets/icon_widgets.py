@@ -216,8 +216,6 @@ class CharacterPreview(Vertical):
 
     def _on_click(self, event: Click) -> None:
         self.add_class("-active")
-        self.app.cfg.active_character_id = self.id.split("_")[-1]
-        self.app.set_active_character()
         self.post_message(self.SelectOther(self))
 
         return super()._on_click(event)

@@ -75,6 +75,8 @@ class CharacterSelection(ModalScreen):
     @on(CharacterPreview.SelectOther)
     def only_highlight_clicked(self, event: CharacterPreview.SelectOther) -> None:
         # remove active class from other Widgets
+        self.app.cfg.active_character_id = event.character_preview.id.split("_")[-1]
+        self.app.load_active_character()
         self.query(CharacterPreview).exclude(
             f"#{event.character_preview.id}"
         ).remove_class("-active")

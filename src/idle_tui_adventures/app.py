@@ -1,7 +1,12 @@
 from textual.app import App
 
 from idle_tui_adventures.classes.characters import Character
-from idle_tui_adventures.database.db_queries import get_character_by_id
+from idle_tui_adventures.classes.gamestates import GameState
+from idle_tui_adventures.database.db_queries import (
+    get_character_by_id,
+    get_gamestate_for_character,
+)
+from idle_tui_adventures.database.db_transactions import create_initial_gamestate
 from idle_tui_adventures.config import IdleTuiConfig, init_new_config
 from idle_tui_adventures.modes.start_menu.start_screen import StartScreen
 from idle_tui_adventures.modes.main_menu.main_screen import MainScreen
@@ -14,6 +19,7 @@ from idle_tui_adventures.modes.settings_menu.settings_screen import SettingsScre
 
 class IdleAdventure(App[None]):
     character: Character | None
+    gamestate: GameState | None
 
     BINDINGS = [
         ("1", "switch_mode('Start')"),
@@ -32,7 +38,7 @@ class IdleAdventure(App[None]):
         init_new_config()
         self.cfg = IdleTuiConfig()
 
-        self.set_active_character()
+        self.load_active_character()
 
         # If character is present go to main
         if self.character and self.cfg.skip_screen:
@@ -40,7 +46,7 @@ class IdleAdventure(App[None]):
         else:
             self.switch_mode(mode="Start")
 
-    def set_active_character(self):
+    def load_active_character(self):
         db_entry = get_character_by_id(character_id=self.cfg.active_character_id)
         if db_entry:
             info_txt = f'Name:\t\t[blue]{db_entry['name']}[/]\n'
@@ -48,6 +54,8 @@ class IdleAdventure(App[None]):
             info_txt += f'Profession:\t[blue]{db_entry['profession']}[/]'
             self.notify(title="Character Active", message=info_txt, timeout=2)
             self.character = Character(**db_entry)
+
+            self.load_game_state()
         else:
             self.notify(
                 title="No Character Found",
@@ -55,3 +63,15 @@ class IdleAdventure(App[None]):
                 severity="warning",
             )
             self.character = None
+
+    def load_game_state(self):
+        if gamestate := get_gamestate_for_character(
+            character_id=self.character.character_id
+        ):
+            self.gamestate = GameState(**gamestate)
+            self.notify(title="Gamestate Found", message=f"{self.gamestate}")
+        else:
+            create_initial_gamestate(character_id=self.character.character_id)
+            self.gamestate = GameState(
+                **get_gamestate_for_character(character_id=self.character.character_id)
+            )

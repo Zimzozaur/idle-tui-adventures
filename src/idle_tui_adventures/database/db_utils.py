@@ -57,6 +57,7 @@ def init_new_db(database: Path = DB_FULL_PATH):
     character_playing INTEGER NOT NULL,
     major_stage INTEGER NOT NULL,
     minor_stage INTEGER NOT NULL,
+    monsters_killed INTEGER NOT NULL,
     FOREIGN KEY (character_playing) REFERENCES characters(character_id)
     );
     """

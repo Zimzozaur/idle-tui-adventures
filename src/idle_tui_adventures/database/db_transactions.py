@@ -128,7 +128,7 @@ def update_experience_db(
     character_id: int, experience: int, database: Path = DB_FULL_PATH
 ) -> int | str:
     exp_dict = {"character_id": character_id, "experience": experience}
-    query_str = """
+    transaction_str = """
     UPDATE characters
     SET experience = :experience
     WHERE character_id = :character_id
@@ -136,7 +136,7 @@ def update_experience_db(
     with create_connection(database=database) as con:
         con.row_factory = sqlite3.Row
         try:
-            con.execute(query_str, exp_dict)
+            con.execute(transaction_str, exp_dict)
             return 0
         except sqlite3.Error as e:
             print(e.sqlite_errorname)
@@ -147,7 +147,7 @@ def update_level_db(
     character_id: int, level: int, database: Path = DB_FULL_PATH
 ) -> int | str:
     lvl_dict = {"character_id": character_id, "level": level}
-    query_str = """
+    transaction_str = """
     UPDATE characters
     SET level = :level
     WHERE character_id = :character_id
@@ -155,8 +155,41 @@ def update_level_db(
     with create_connection(database=database) as con:
         con.row_factory = sqlite3.Row
         try:
-            con.execute(query_str, lvl_dict)
+            con.execute(transaction_str, lvl_dict)
             return 0
         except sqlite3.Error as e:
             print(e.sqlite_errorname)
+            return e.sqlite_errorname
+
+
+def create_initial_gamestate(character_id: int, database: Path = DB_FULL_PATH):
+    gamestate_dict = {
+        "character_playing": character_id,
+        "major_stage": 1,
+        "minor_stage": 1,
+        "monsters_killed": 0,
+    }
+
+    transaction_str = """
+    INSERT INTO gamestates
+    VALUES (
+        NULL,
+        :character_playing,
+        :major_stage,
+        :minor_stage,
+        :monsters_killed
+        )
+    """
+    with create_connection(database=database) as con:
+        con.row_factory = sqlite3.Row
+        try:
+            con.execute(transaction_str, gamestate_dict)
+            con.commit()
+            return 0
+        except sqlite3.Error as e:
+            con.rollback()
+            if e.sqlite_errorcode == sqlite3.SQLITE_CONSTRAINT_CHECK:
+                return "Item Insertion Error"
+            elif e.sqlite_errorcode == sqlite3.SQLITE_CONSTRAINT_UNIQUE:
+                return "Iterm Insertion Error"
             return e.sqlite_errorname
