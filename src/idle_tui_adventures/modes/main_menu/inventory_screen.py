@@ -1,4 +1,7 @@
-from typing import Iterable, Any, Coroutine
+from typing import Iterable, Any, Coroutine, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from idle_tui_adventures.app import IdleAdventure
 
 from textual import on
 from textual.events import Mount, Key, MouseDown
@@ -19,6 +22,7 @@ from idle_tui_adventures.database.db_queries import get_all_items
 
 
 class InventoryEquipScreen(ModalScreen):
+    app: "IdleAdventure"
     name: str = "InventoryEquipScreen"
     BINDINGS = [("escape", "app.pop_screen"), ("b", "app.pop_screen")]
     DEFAULT_CSS = """InventoryEquipScreen {
@@ -48,7 +52,7 @@ class InventoryEquipScreen(ModalScreen):
         key_pressed = event.key
         if key_pressed == "space":
             create_new_item(
-                name="Axe of Ordinary",
+                name="Axe2 of Ordinary",
                 level_needed=1,
                 category="Weapon",
                 rarity="unique",
@@ -58,6 +62,7 @@ class InventoryEquipScreen(ModalScreen):
                 intelligence=0,
                 dexterity=0,
                 luck=2,
+                owned_by=1,
             )
             self.notify("Item Created")
 

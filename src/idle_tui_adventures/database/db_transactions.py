@@ -30,8 +30,6 @@ def create_new_character(
         "creation_time": datetime.now().replace(microsecond=0),
         "level": 1,
         "experience": 0,
-        "major_stage": 1,
-        "minor_stage": 1,
     }
 
     transaction_str = """
@@ -46,9 +44,7 @@ def create_new_character(
         :strength,
         :intelligence,
         :dexterity,
-        :luck,
-        :major_stage,
-        :minor_stage
+        :luck
         );"""
 
     with create_connection(database=database) as con:
@@ -77,6 +73,7 @@ def create_new_item(
     intelligence: int,
     dexterity: int,
     luck: int,
+    owned_by: int,
     database: Path = DB_FULL_PATH,
 ) -> str | int:
     data_item_dict = {
@@ -90,6 +87,8 @@ def create_new_item(
         "intelligence": intelligence,
         "dexterity": dexterity,
         "luck": luck,
+        "owned_by": owned_by,
+        "equipped": False,
     }
 
     transaction_str = """
@@ -105,7 +104,9 @@ def create_new_item(
         :strength,
         :intelligence,
         :dexterity,
-        :luck
+        :luck,
+        :owned_by,
+        :equipped
         );"""
 
     with create_connection(database=database) as con:

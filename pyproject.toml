@@ -29,9 +29,10 @@ dev-dependencies = [
     "pytest>=8.3.2",
     "pytest-cov>=5.0.0",
     "pytest-asyncio>=0.23.8",
+    "pytest-xdist>=3.6.1",
 ]
 [tool.pytest.ini_options]
-addopts = "--cov idle_tui_adventures --cov-report term-missing --verbose"
+addopts = "-n 4 --dist=loadgroup --cov idle_tui_adventures --cov-report term-missing --verbose"
 testpaths = ["tests"]
 
 [tool.hatch.metadata]

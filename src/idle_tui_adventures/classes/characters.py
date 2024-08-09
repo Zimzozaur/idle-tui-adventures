@@ -20,8 +20,6 @@ class Character:
     intelligence: int
     dexterity: int
     luck: int
-    major_stage: int
-    minor_stage: int
 
     def __post_init__(self) -> None:
         self.equipped_items = self.get_equipped_items()

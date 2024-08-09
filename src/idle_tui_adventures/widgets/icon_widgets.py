@@ -210,7 +210,8 @@ class CharacterPreview(Vertical):
         yield Label(self.character.created_at)
         yield Label(f"Level: {self.character.level}")
         yield Label(f"Experience: {self.character.experience}")
-        yield Label(f"Stage: {self.character.major_stage}-{self.character.minor_stage}")
+        yield Label(f"Stage: {'TO'}-{'Fill'}")
+        # yield Label(f"Stage: {self.character.major_stage}-{self.character.minor_stage}")
         return super().compose()
 
     def _on_click(self, event: Click) -> None:

@@ -16,5 +16,7 @@ class Item:
     intelligence: int
     dexterity: int
     luck: int
+    owned_by: int
+    equipped: bool
 
     def __post_init__(self) -> None: ...

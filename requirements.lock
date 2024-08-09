@@ -31,7 +31,7 @@ rich==13.7.1
     # via textual
 rich-pixels==3.0.1
     # via idle-tui-adventures
-textual==0.75.1
+textual==0.76.0
     # via idle-tui-adventures
 typing-extensions==4.12.2
     # via textual

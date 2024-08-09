@@ -7,14 +7,14 @@ from idle_tui_adventures.constants import (
 
 
 def create_connection(database: Path = DB_FULL_PATH) -> sqlite3.Connection:
-    return sqlite3.connect(database=database, autocommit=False)
+    return sqlite3.connect(database=database)
 
 
 def init_new_db(database: Path = DB_FULL_PATH):
     if database.exists():
         return
 
-    CHAR_DB_CREATION = """
+    char_db_creation_str = """
     CREATE TABLE IF NOT EXISTS characters (
     character_id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
@@ -26,14 +26,12 @@ def init_new_db(database: Path = DB_FULL_PATH):
     intelligence INTEGER NOT NULL,
     dexterity INTEGER NOT NULL,
     luck INTEGER NOT NULL,
-    major_stage INTEGER NOT NULL,
-    minor_stage INTEGER NOT NULL,
-    Check (name <> ""),
-    Check (profession in ('Mage', 'Warrior', 'Ranger', 'Thief'))
+    CHECK (name <> ""),
+    CHECK (profession in ('Mage', 'Warrior', 'Ranger', 'Thief'))
     );
     """
 
-    ITEM_DB_CREATION = """
+    item_db_creation_str = """
     CREATE TABLE IF NOT EXISTS items (
     item_id INTEGER PRIMARY KEY,
     name TEXT UNIQUE NOT NULL,
@@ -45,34 +43,37 @@ def init_new_db(database: Path = DB_FULL_PATH):
     strength INTEGER NOT NULL,
     intelligence INTEGER NOT NULL,
     dexterity INTEGER NOT NULL,
-    luck INTEGER NOT NULL
+    luck INTEGER NOT NULL,
+    owned_by INTEGER NOT NULL,
+    equipped BOOLEAN,
+    FOREIGN KEY (owned_by) REFERENCES characters(character_id)
+    );
+    """
+    # CHECK (equipped in (0, 1))
+
+    gamestate_db_creation_str = """
+    CREATE TABLE IF NOT EXISTS gamestates (
+    gamestate_id INTEGER PRIMARY KEY,
+    character_playing INTEGER NOT NULL,
+    major_stage INTEGER NOT NULL,
+    minor_stage INTEGER NOT NULL,
+    FOREIGN KEY (character_playing) REFERENCES characters(character_id)
     );
     """
 
-    STORAGE_DB_CREATION = """
-    CREATE TABLE IF NOT EXISTS storages (
-    storage_id INTEGER PRIMARY KEY,
-    character_id INTEGER,
-    item_id INTEGER,
-    FOREIGN KEY (character_id) REFERENCES character(character_id),
-    FOREIGN KEY (item_id) REFERENCES item(item_id)
-    );
-    """
-
-    INDEXES_CREATION = """
+    indexes_creation_str = """
     CREATE INDEX IF NOT EXISTS idx_characters_name ON characters(name);
     CREATE INDEX IF NOT EXISTS idx_items_name ON items(name);
-    CREATE INDEX IF NOT EXISTS idx_storages_character_id ON storages(character_id);
-    CREATE INDEX IF NOT EXISTS idx_storages_item_id ON storages(item_id);
+    CREATE INDEX IF NOT EXISTS idx_gamestate_id ON gamestates(gamestate_id);
     """
 
     with create_connection(database=database) as con:
         con.row_factory = sqlite3.Row
         try:
-            con.execute(CHAR_DB_CREATION)
-            con.execute(ITEM_DB_CREATION)
-            con.execute(STORAGE_DB_CREATION)
-            con.executescript(INDEXES_CREATION)
+            con.execute(char_db_creation_str)
+            con.execute(item_db_creation_str)
+            con.execute(gamestate_db_creation_str)
+            con.executescript(indexes_creation_str)
 
             return 0
         except sqlite3.Error as e:
