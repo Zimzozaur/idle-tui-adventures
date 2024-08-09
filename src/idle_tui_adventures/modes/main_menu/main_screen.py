@@ -1,4 +1,7 @@
-from typing import Iterable
+from typing import Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from idle_tui_adventures.app import IdleAdventure
 
 from textual import on
 from textual.events import ScreenResume, ScreenSuspend
@@ -9,12 +12,15 @@ from textual.screen import Screen
 from idle_tui_adventures.widgets.main_screen_widgets import (
     CharacterProgressbar,
     MonsterPanel,
+    StageDisplay,
 )
 from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow
 from idle_tui_adventures.utils import calculate_exp_needed
 
 
 class MainScreen(Screen):
+    app: "IdleAdventure"
+    monster_killed: int = 0
     name: str = "MainScreen"
     DEFAULT_CSS = """MainScreen {
         layout: grid;
@@ -30,7 +36,7 @@ class MainScreen(Screen):
     def compose(self) -> Iterable[Widget]:
         yield Placeholder("Character", id="tile_0")
         yield MonsterPanel()
-        yield Placeholder("Stage", id="tile_1")
+        yield StageDisplay()
         yield Placeholder("Log", id="tile_2")
 
         yield CharacterProgressbar()
@@ -57,3 +63,11 @@ class MainScreen(Screen):
             p_bar.timer.resume()
             monster = self.query_one(MonsterPanel)
             monster.timer.resume()
+
+    @on(MonsterPanel.MonsterDefeated)
+    def advance_stage(self):
+        self.monster_killed += 1
+        if self.monster_killed == 5:
+            self.monster_killed = 0
+            self.query_one(MonsterPanel).refresh(recompose=True, repaint=False)
+            self.query_one(StageDisplay).advance_stage()

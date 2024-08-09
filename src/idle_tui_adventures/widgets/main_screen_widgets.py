@@ -1,12 +1,18 @@
 from __future__ import annotations
-from typing import Coroutine, Any, Iterable
+from typing import Coroutine, Any, Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from idle_tui_adventures.app import IdleAdventure
+
 from random import randint, random
 
 
+from textual import on
 from textual.geometry import Offset
-from textual.events import Compose
+from textual.message import Message
+from textual.events import Click, Compose
 from textual.widget import Widget
-from textual.widgets import ProgressBar, Label
+from textual.widgets import ProgressBar, Label, Digits
 from textual.containers import Vertical
 
 from idle_tui_adventures.utils import calculate_exp_needed
@@ -14,6 +20,8 @@ from idle_tui_adventures.widgets.icon_widgets import ImageStatic
 
 
 class CharacterProgressbar(ProgressBar):
+    app: "IdleAdventure"
+
     DEFAULT_CSS = """
     CharacterProgressbar {
         column-span: 5;
@@ -79,7 +87,54 @@ class CharacterProgressbar(ProgressBar):
         self.update(progress=0, total=new_total - last_total)
 
 
+class HealthBar(ProgressBar):
+    app: "IdleAdventure"
+    DEFAULT_CSS = """
+    HealthBar {
+    height: auto;
+
+    & Bar  {
+        width: 1fr;
+        }
+
+    & Bar > .bar--bar {
+        color: red;
+        }
+    }
+    """
+
+    class HpReachedZero(Message):
+        def __init__(self, healthbar: HealthBar):
+            self.healthbar = healthbar
+            super().__init__()
+
+        @property
+        def control(self) -> HealthBar:
+            return self.healthbar
+
+    def __init__(self, max_hp: int, id: str | None = None):
+        self.max_hp = max_hp
+        super().__init__(
+            total=self.max_hp, show_percentage=False, show_eta=False, id=id
+        )
+
+        self.update(progress=self.max_hp)
+
+    def heal(self, amount: int):
+        self.progress += amount
+
+    def damage(self, amount: int):
+        self.progress -= amount
+        if self.progress <= 0:
+            self.post_message(self.HpReachedZero(self))
+            self.heal_to_full()
+
+    def heal_to_full(self):
+        self.progress = self.total
+
+
 class MonsterPanel(Vertical):
+    app: "IdleAdventure"
     DEFAULT_CSS = """
     MonsterPanel {
         row-span: 3;
@@ -87,32 +142,33 @@ class MonsterPanel(Vertical):
         width: 1fr;
         height: 1fr;
 
-        ProgressBar {
-        height: auto;
-
-        & Bar  {
-            width: 1fr;
-            }
-
-        & Bar > .bar--bar {
-            color: red;
-            }
+        HealthBar {
+            height: auto;
         }
-        ImageStatic {
-        width: 1fr;
-        height: 1fr;
+
+        & ImageStatic {
+            width: 1fr;
+            height: 1fr;
+        }
+        & #label_monster_name {
+            text-align:center;
+            width: 1fr;
         }
     }
     """
 
+    class MonsterDefeated(Message):
+        def __init__(self, monster_panel: MonsterPanel):
+            self.monster_panel = monster_panel
+            super().__init__()
+
+        @property
+        def control(self) -> MonsterPanel:
+            return self.monster_panel
+
     def compose(self) -> Iterable[Widget]:
-        self.monster_label = Label("Big Bear")
-        yield self.monster_label
-        self.pb = ProgressBar(
-            total=1000, id="pb_monster_hp", show_eta=False, show_percentage=False
-        )
-        self.pb.progress = 1000
-        yield self.pb
+        yield Label("Monster Bad", id="label_monster_name")
+        yield HealthBar(max_hp=1000)
         yield ImageStatic(icon_name="dragon")
 
         return super().compose()
@@ -120,25 +176,69 @@ class MonsterPanel(Vertical):
     def _on_compose(self, event: Compose) -> Coroutine[Any, Any, None]:
         self.timer = self.set_interval(
             interval=1 / self.app.character.attack_speed,
-            callback=self.deal_damage,
+            callback=self.fight_monster,
         )
 
         return super()._on_compose(event)
 
-    def deal_damage(self):
-        damage = 25
+    def fight_monster(self):
+        damage = self.app.character.damage
         try:
             self.mount(DamageLabel(damage=damage, parent_size=self.size))
         except Exception:
             pass
-        self.pb.progress -= damage
-        if self.pb.progress <= 0:
-            self.monster_label.update("Dead Bear")
-            self.timer.reset()
-            self.refresh(recompose=True, repaint=False)
+        self.query_one(HealthBar).damage(damage)
+
+    @on(HealthBar.HpReachedZero)
+    def monster_is_dead(
+        self,
+    ):
+        self.post_message(self.MonsterDefeated(self))
+
+    def _on_click(self, event: Click) -> Coroutine[Any, Any, None]:
+        self.fight_monster()
+        return super()._on_click(event)
 
 
-class Healthbar(ProgressBar): ...
+class StageDisplay(Vertical):
+    app: "IdleAdventure"
+    DEFAULT_CSS = """
+    StageDisplay {
+        height: auto;
+        width:1fr;
+        align:center middle;
+
+        & Label {
+            width:1fr;
+            text-align: center;
+        }
+        & Digits {
+            width:1fr;
+            text-align: center;
+        }
+    }
+    """
+
+    def __init__(self) -> None:
+        self.stage_string = (
+            f"{self.app.gamestate.major_stage} - {self.app.gamestate.minor_stage}"
+        )
+        super().__init__()
+
+    def compose(self) -> Iterable[Widget]:
+        yield Label("Current Stage")
+        yield Digits(value=self.stage_string)
+        return super().compose()
+
+    def advance_stage(self) -> None:
+        if self.app.gamestate.minor_stage == 5:
+            self.app.gamestate.major_stage += 1
+            self.app.gamestate.minor_stage = 1
+        else:
+            self.app.gamestate.minor_stage += 1
+        self.query_one(Digits).update(
+            f"{self.app.gamestate.major_stage} - {self.app.gamestate.minor_stage}"
+        )
 
 
 class DamageLabel(Label):

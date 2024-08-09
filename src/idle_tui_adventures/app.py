@@ -18,8 +18,8 @@ from idle_tui_adventures.modes.settings_menu.settings_screen import SettingsScre
 
 
 class IdleAdventure(App[None]):
-    character: Character | None
-    gamestate: GameState | None
+    character: Character  # | None
+    gamestate: GameState  # | None
 
     BINDINGS = [
         ("1", "switch_mode('Start')"),
