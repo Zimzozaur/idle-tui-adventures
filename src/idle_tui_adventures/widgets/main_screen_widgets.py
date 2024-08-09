@@ -17,6 +17,10 @@ from textual.containers import Vertical
 
 from idle_tui_adventures.utils import calculate_exp_needed
 from idle_tui_adventures.widgets.icon_widgets import ImageStatic
+from idle_tui_adventures.database.db_transactions import (
+    update_minor_stage_db,
+    update_major_stage_db,
+)
 
 
 class CharacterProgressbar(ProgressBar):
@@ -168,7 +172,7 @@ class MonsterPanel(Vertical):
 
     def compose(self) -> Iterable[Widget]:
         yield Label("Monster Bad", id="label_monster_name")
-        yield HealthBar(max_hp=1000)
+        yield HealthBar(max_hp=1_000)
         yield ImageStatic(icon_name="dragon")
 
         return super().compose()
@@ -234,10 +238,18 @@ class StageDisplay(Vertical):
         if self.app.gamestate.minor_stage == 5:
             self.app.gamestate.major_stage += 1
             self.app.gamestate.minor_stage = 1
+            update_major_stage_db(
+                gamestate_id=self.app.gamestate.gamestate_id,
+                major_stage=self.app.gamestate.major_stage,
+            )
         else:
             self.app.gamestate.minor_stage += 1
         self.query_one(Digits).update(
             f"{self.app.gamestate.major_stage} - {self.app.gamestate.minor_stage}"
+        )
+        update_minor_stage_db(
+            gamestate_id=self.app.gamestate.gamestate_id,
+            minor_stage=self.app.gamestate.minor_stage,
         )
 
 

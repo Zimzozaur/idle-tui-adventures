@@ -162,6 +162,65 @@ def update_level_db(
             return e.sqlite_errorname
 
 
+def update_monsters_killed_db(
+    gamestate_id: int, database: Path = DB_FULL_PATH
+) -> int | str:
+    gamestate_dict = {
+        "gamestate_id": gamestate_id,
+    }
+    transaction_str = """
+    UPDATE gamestates
+    SET monsters_killed = monsters_killed + 1
+    WHERE gamestate_id = :gamestate_id
+    """
+    with create_connection(database=database) as con:
+        con.row_factory = sqlite3.Row
+        try:
+            con.execute(transaction_str, gamestate_dict)
+            return 0
+        except sqlite3.Error as e:
+            print(e.sqlite_errorname)
+            return e.sqlite_errorname
+
+
+def update_major_stage_db(
+    gamestate_id: int, major_stage: int, database: Path = DB_FULL_PATH
+) -> int | str:
+    gamestate_dict = {"gamestate_id": gamestate_id, "major_stage": major_stage}
+    transaction_str = """
+    UPDATE gamestates
+    SET major_stage = :major_stage
+    WHERE gamestate_id = :gamestate_id
+    """
+    with create_connection(database=database) as con:
+        con.row_factory = sqlite3.Row
+        try:
+            con.execute(transaction_str, gamestate_dict)
+            return 0
+        except sqlite3.Error as e:
+            print(e.sqlite_errorname)
+            return e.sqlite_errorname
+
+
+def update_minor_stage_db(
+    gamestate_id: int, minor_stage: int, database: Path = DB_FULL_PATH
+) -> int | str:
+    gamestate_dict = {"gamestate_id": gamestate_id, "minor_stage": minor_stage}
+    transaction_str = """
+    UPDATE gamestates
+    SET minor_stage = :minor_stage
+    WHERE gamestate_id = :gamestate_id
+    """
+    with create_connection(database=database) as con:
+        con.row_factory = sqlite3.Row
+        try:
+            con.execute(transaction_str, gamestate_dict)
+            return 0
+        except sqlite3.Error as e:
+            print(e.sqlite_errorname)
+            return e.sqlite_errorname
+
+
 def create_initial_gamestate(character_id: int, database: Path = DB_FULL_PATH):
     gamestate_dict = {
         "character_playing": character_id,

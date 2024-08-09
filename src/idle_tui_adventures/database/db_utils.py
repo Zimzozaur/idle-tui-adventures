@@ -49,7 +49,6 @@ def init_new_db(database: Path = DB_FULL_PATH):
     FOREIGN KEY (owned_by) REFERENCES characters(character_id)
     );
     """
-    # CHECK (equipped in (0, 1))
 
     gamestate_db_creation_str = """
     CREATE TABLE IF NOT EXISTS gamestates (

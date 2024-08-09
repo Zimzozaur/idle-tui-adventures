@@ -8,8 +8,6 @@
             - query function
         - Inventory
             - query function
-        - Progress Infos
-            - Stage
         - Stats
             - Base Str, Int, Dex, Luc
             - Total Str, Int, Dex, Luc
@@ -39,18 +37,24 @@
     - load character screen
         - horizontal scroll character view
             - Options popup
-                - Set as active / Select
                 - Rename
                 - Delete
 
 - Main Screen
     - Layout define
         - Monster Screen
-            - Monster damage
-            - Monster HP
+            - Monster spawn
+            - Monster class multiply stats based on current gamestate
+            - Monster Stat DB?
         - Stages?
             - Stage X/1 -> X/10 -> Boss -> X+1/1...
-    - pop ups
+    - Shop Screen
+        - Buy/Sell Stuff?
+        - Treasure Lootboxes
+    - Character Screen
+        - get skillpoints to distribute
+            - another DB Field?
+    - Equip Move Popup
         - character stats
             - define db schema
             - drag n drop

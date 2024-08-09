@@ -15,6 +15,7 @@ from idle_tui_adventures.widgets.main_screen_widgets import (
     StageDisplay,
 )
 from idle_tui_adventures.widgets.icon_widgets import MenuIconsRow
+from idle_tui_adventures.database.db_transactions import update_monsters_killed_db
 from idle_tui_adventures.utils import calculate_exp_needed
 
 
@@ -67,6 +68,7 @@ class MainScreen(Screen):
     @on(MonsterPanel.MonsterDefeated)
     def advance_stage(self):
         self.monster_killed += 1
+        update_monsters_killed_db(gamestate_id=self.app.gamestate.gamestate_id)
         if self.monster_killed == 5:
             self.monster_killed = 0
             self.query_one(MonsterPanel).refresh(recompose=True, repaint=False)

@@ -27,7 +27,7 @@ class Character:
         # Calculate Stats
         self.attack_speed = 1.00
         self.crit_rate = 0.20
-        self.damage = 150
+        self.damage = 500
 
     def level_up(self):
         self.level += 1
