@@ -84,3 +84,6 @@ ICONS_LITERAL = (
 
 # Inventory (Row,Cols)
 INVENTORY_SIZE = (4, 4)
+
+# Progression
+MONSTER_PER_STAGE = 5

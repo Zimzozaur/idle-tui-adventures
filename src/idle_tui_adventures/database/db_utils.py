@@ -22,6 +22,7 @@ def init_new_db(database: Path = DB_FULL_PATH):
     created_at TIMESTAMP,
     level INTEGER NOT NULL,
     experience INTEGER NOT NULL,
+    unassigned_stat_points INTEGER NOT NULL,
     strength INTEGER NOT NULL,
     intelligence INTEGER NOT NULL,
     dexterity INTEGER NOT NULL,

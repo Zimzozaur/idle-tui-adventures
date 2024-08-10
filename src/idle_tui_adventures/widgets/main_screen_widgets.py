@@ -6,7 +6,6 @@ if TYPE_CHECKING:
 
 from random import randint, random
 
-
 from textual import on
 from textual.geometry import Offset
 from textual.message import Message
@@ -16,6 +15,7 @@ from textual.widgets import ProgressBar, Label, Digits
 from textual.containers import Vertical
 
 from idle_tui_adventures.utils import calculate_exp_needed
+from idle_tui_adventures.constants import MONSTER_PER_STAGE
 from idle_tui_adventures.widgets.icon_widgets import ImageStatic
 from idle_tui_adventures.database.db_transactions import (
     update_minor_stage_db,
@@ -235,7 +235,7 @@ class StageDisplay(Vertical):
         return super().compose()
 
     def advance_stage(self) -> None:
-        if self.app.gamestate.minor_stage == 5:
+        if self.app.gamestate.minor_stage == MONSTER_PER_STAGE:
             self.app.gamestate.major_stage += 1
             self.app.gamestate.minor_stage = 1
             update_major_stage_db(

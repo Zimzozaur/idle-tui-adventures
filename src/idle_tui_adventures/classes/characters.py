@@ -16,6 +16,7 @@ class Character:
     created_at: datetime
     level: int
     experience: int
+    unassigned_stat_points: int
     strength: int
     intelligence: int
     dexterity: int
@@ -41,15 +42,3 @@ class Character:
     def get_equipped_items(self): ...
     # von db
     def get_inventory_items(self): ...
-
-
-class Warrior(Character): ...
-
-
-class Mage(Character): ...
-
-
-class Ranger(Character): ...
-
-
-class Thief(Character): ...
