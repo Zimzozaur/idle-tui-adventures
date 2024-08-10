@@ -83,16 +83,12 @@ class Slot(Static):
             self.mount(item)
             self.amount = 1
             self.empty = False
-        else:
-            pass
 
     def remove_item(self) -> None:
         if not self.empty:
             self.query_one(ItemIcon).remove()
             self.amount -= 1
             self.empty = True
-        else:
-            pass
 
     def watch_amount(self):
         self.border_subtitle = f"{self.amount} x" if self.amount else ""
