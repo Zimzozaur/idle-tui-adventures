@@ -40,6 +40,24 @@ def get_character_by_id(
             return None
 
 
+def get_stages_for_character(
+    character_id: int, database: Path = DB_FULL_PATH
+) -> sqlite3.Row | None:
+    query_str = """
+    SELECT major_stage, minor_stage
+    FROM gamestates
+    WHERE character_playing = ?
+    """
+    with create_connection(database=database) as con:
+        con.row_factory = sqlite3.Row
+        try:
+            gamestate = con.execute(query_str, (character_id,)).fetchone()
+            return gamestate
+        except sqlite3.Error as e:
+            print(e)
+            return None
+
+
 def get_gamestate_for_character(
     character_id: int, database: Path = DB_FULL_PATH
 ) -> sqlite3.Row | None:

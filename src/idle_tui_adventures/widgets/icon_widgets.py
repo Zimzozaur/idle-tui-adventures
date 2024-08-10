@@ -193,8 +193,15 @@ class CharacterPreview(Vertical):
     }
     """
 
-    def __init__(self, character_data: Row):
+    def __init__(self, character_data: Row, stage_data: Row | None):
         self.character: Character = Character(**dict(character_data))
+
+        if not stage_data:
+            self.major_stage, self.minor_stage = 1, 1
+        else:
+            self.major_stage = stage_data[0]
+            self.minor_stage = stage_data[1]
+
         self.can_focus = True
 
         super().__init__(id=f"character_id_{self.character.character_id}")
@@ -210,7 +217,7 @@ class CharacterPreview(Vertical):
         yield Label(self.character.created_at)
         yield Label(f"Level: {self.character.level}")
         yield Label(f"Experience: {self.character.experience}")
-        yield Label(f"Stage: {'TO'}-{'Fill'}")
+        yield Label(f"Stage: {self.major_stage}-{self.minor_stage}")
         # yield Label(f"Stage: {self.character.major_stage}-{self.character.minor_stage}")
         return super().compose()
 

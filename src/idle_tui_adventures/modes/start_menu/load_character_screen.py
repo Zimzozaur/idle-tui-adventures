@@ -1,5 +1,9 @@
 from sqlite3 import Row
-from typing import Iterable
+from typing import Iterable, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from idle_tui_adventures.app import IdleAdventure
+
 
 from textual import on
 from textual.events import Mount
@@ -8,11 +12,15 @@ from textual.widget import Widget
 from textual.containers import HorizontalScroll
 from textual.widgets import Button
 
-from idle_tui_adventures.database.db_queries import get_all_characters
+from idle_tui_adventures.database.db_queries import (
+    get_all_characters,
+    get_stages_for_character,
+)
 from idle_tui_adventures.widgets.icon_widgets import CharacterPreview
 
 
 class CharacterSelection(ModalScreen):
+    app: "IdleAdventure"
     name: str = "CharacterSelection"
     BINDINGS = [("escape", "app.pop_screen")]
     DEFAULT_CSS = """
@@ -45,7 +53,10 @@ class CharacterSelection(ModalScreen):
         self.characters: list[Row] = get_all_characters()
         with HorizontalScroll():
             for char_data in self.characters:
-                yield CharacterPreview(character_data=char_data)
+                stage_data = get_stages_for_character(
+                    character_id=dict(char_data)["character_id"]
+                )
+                yield CharacterPreview(character_data=char_data, stage_data=stage_data)
         yield Button("Start Adventure", id="btn_start_adventure")
         yield Button("Back to Start Screen", id="btn_go_back")
         return super().compose()

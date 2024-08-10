@@ -52,6 +52,9 @@ class ItemPopUpScreen(ModalScreen):
     @on(MouseMove)
     def on_mouse_move(self):
         self.floating_icon.offset = self.app.mouse_position
+        self.valid_position = False
+        self.floating_icon.styles.border = "outer", "red"
+        self.floating_icon.border_title = ""
 
         for slot in self.slot_list:
             if slot.region.contains_point(self.app.mouse_position):
@@ -60,6 +63,6 @@ class ItemPopUpScreen(ModalScreen):
                     self.floating_icon.border_title = slot.id
                     self.valid_position = True
                 else:
-                    self.valid_position = False
+                    # self.valid_position = False
                     self.floating_icon.styles.border = "outer", "red"
                     self.floating_icon.border_title = slot.id
