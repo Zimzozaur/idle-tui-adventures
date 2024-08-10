@@ -36,7 +36,7 @@ class IdleAdventure(App[None]):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.cfg = IdleTuiConfig()
+        self.cfg: IdleTuiConfig = IdleTuiConfig()
 
     def on_mount(self):
         self.load_active_character()
