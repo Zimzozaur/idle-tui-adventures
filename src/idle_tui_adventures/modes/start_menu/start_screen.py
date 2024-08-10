@@ -9,9 +9,11 @@ from idle_tui_adventures.modes.start_menu.new_character_screen import CharacterC
 from idle_tui_adventures.modes.start_menu.load_character_screen import (
     CharacterSelection,
 )
+from idle_tui_adventures.app import IdleAdventure
 
 
 class StartScreen(Screen):
+    app: IdleAdventure
     name: str = "StartScreen"
     DEFAULT_CSS = """StartScreen {
         align: center middle;
